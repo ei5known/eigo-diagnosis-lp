@@ -7,6 +7,9 @@
   <meta name="description" content="海外赴任が決まったビジネスパーソンへ。出国6〜8か月前の今、限られた時間で何から準備すべきかを1分の無料診断で整理。英語力だけでなく、交渉・調整・現地生活の負荷を見える化。">
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="favicon.ico">
+
+  <!-- reCAPTCHA Enterprise（Site key をここに入れる） -->
+  <script src="https://www.google.com/recaptcha/enterprise.js?render=6Leu6cAsAAAAAHXDwif8T25Hd37y4_gokyMW6dgt"></script>
 </head>
 <body>
 
@@ -85,7 +88,7 @@
     </div>
   </section>
 
-  <!-- Section: Solution (Feature Block) -->
+  <!-- Section: Solution -->
   <section class="section" style="background: var(--bg-secondary);">
     <div class="container feature-block">
       <div class="animate-in">
@@ -214,7 +217,7 @@
         <div style="text-align: right;">
           <ul style="display: flex; gap: 24px; font-size: 0.9rem; color: var(--text-secondary);">
             <li><a href="#">プライバシーポリシー</a></li>
-            <li><a href="#">利用規訳</a></li>
+            <li><a href="#">利用規約</a></li>
             <li><a href="#">運営会社</a></li>
           </ul>
         </div>
@@ -224,12 +227,17 @@
       </div>
     </div>
   </footer>
+
+  <!-- 診断用設定：ここでも Site key を同じ値で使う -->
   <script>
     window.DIAGNOSIS_CONFIG = {
       gasEndpoint: 'https://script.google.com/macros/s/AKfycbyUh3KzwwkU67HsMgBDrEo3XYFuJnsr4gwvV3McHLwWxK8S35BxXqpOOJj3Os_BWo59/exec',
-      formSyncEnabled: false
+      formSyncEnabled: false,
+      siteKey: '6Leu6cAsAAAAAHXDwif8T25Hd37y4_gokyMW6dgt',
+      recaptchaAction: 'submit_diagnosis'
     };
   </script>
+
   <script src="js/diagnosis.js"></script>
 </body>
 </html>
