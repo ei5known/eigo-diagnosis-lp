@@ -65,7 +65,6 @@
         { label: '家族の生活準備', value: 4 }
       ]
     }
-  ];
 function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param) || '';
@@ -77,6 +76,7 @@ function getQueryParam(param) {
       const escape = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
       return escape[match];
     });
+  }
   }
   const state = {
     step: -1,
