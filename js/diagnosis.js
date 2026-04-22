@@ -5,11 +5,11 @@
 
   if (!container || !startBtn) return;
 
-  const questions = [
+  const questions =[
     {
       key: 'assignment_status',
       title: '現在の海外赴任状況を教えてください',
-      options: [
+      options:[
         { label: '赴任が正式に決まっている', value: 4 },
         { label: '打診・候補段階', value: 3 },
         { label: '将来的に可能性がある', value: 2 }
@@ -18,7 +18,7 @@
     {
       key: 'english_level',
       title: '英語での会議・説明にどの程度不安がありますか',
-      options: [
+      options:[
         { label: 'かなり不安がある', value: 4 },
         { label: 'やや不安がある', value: 3 },
         { label: '少し不安がある', value: 2 },
@@ -28,7 +28,7 @@
     {
       key: 'negotiation_level',
       title: '現地メンバーや取引先との調整・交渉に不安がありますか',
-      options: [
+      options:[
         { label: 'かなり不安がある', value: 4 },
         { label: 'やや不安がある', value: 3 },
         { label: '少し不安がある', value: 2 },
@@ -38,7 +38,7 @@
     {
       key: 'field_issue_level',
       title: '工場・店舗・現場対応の英語に不安がありますか',
-      options: [
+      options:[
         { label: 'かなり不安がある', value: 4 },
         { label: 'やや不安がある', value: 3 },
         { label: '少し不安がある', value: 2 },
@@ -48,7 +48,7 @@
     {
       key: 'family_support_level',
       title: 'ご家族の生活立ち上げや生活英語にも不安がありますか',
-      options: [
+      options:[
         { label: 'かなり不安がある', value: 4 },
         { label: 'やや不安がある', value: 3 },
         { label: '少し不安がある', value: 2 },
@@ -58,7 +58,7 @@
     {
       key: 'priority_issue',
       title: '今もっとも整理したいテーマは何ですか',
-      options: [
+      options:[
         { label: '英語力', value: 4 },
         { label: '交渉・調整', value: 4 },
         { label: '現場対応', value: 4 },
@@ -198,16 +198,16 @@
         </p>
         <form id="diagnosis-lead-form" class="diagnosis-lead-form">
           <div class="form-group">
-            abel for="lead-name">お名前 <span class="required">*</span></label>
+            <label for="lead-name">お名前 <span class="required">*</span></label>
             <input type="text" id="lead-name" name="name" required>
           </div>
           <div class="form-group">
-            abel for="lead-email">メールアドレス <span class="required">*</span></label>
+            <label for="lead-email">メールアドレス <span class="required">*</span></label>
             <input type="email" id="lead-email" name="email" required>
             <p class="input-hint">Gmail / 会社メールなど、日常的に確認されているアドレスをご入力ください。</p>
           </div>
           <div class="form-group">
-            abel class="checkbox-label">
+            <label class="checkbox-label">
               <input type="checkbox" id="lead-form-sync" name="form_sync_enabled" checked>
               診断結果をもとに、今後の準備に役立つ情報（メールマガジン）を受け取る
             </label>
@@ -279,4 +279,17 @@
 
           renderResult(result.result);
         } catch (error) {
+          console.error('通信エラー:', error);
+          alert('通信エラーが発生しました。ネットワーク環境をご確認の上、再度お試しください。');
           
+          // 送信ボタンの状態を元に戻す処理（エラー時）
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '診断結果を受け取る';
+          }
+        } // try-catchの閉じ
+      }); // form.addEventListenerの閉じ
+    } // if (form)の閉じ
+  } // renderLeadForm関数の閉じ
+
+})(); // ファイル全体を囲む即時実行関数の閉じ
