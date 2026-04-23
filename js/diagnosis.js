@@ -1,15 +1,39 @@
+/*
+ * =========================================================================
+ * 英語脳育成塾 LP - 診断ファンネル フロントエンド JS
+ * File: js/diagnosis.js
+ * 
+ * [ VERSION HISTORY ]
+ * v1.1.0 (2026-04-24)
+ *   - [TASK2対応] 通信失敗時およびサーバーエラー時に、ユーザー向けの
+ *     丁寧なエラーモーダルを表示するUX向上処理 (showErrorModal) を実装。
+ *   - 通信エラーメッセージの定数化 (ERROR_MSG_DEFAULT)。
+ *   - fetch処理での HTTP ステータス (response.ok) 判定の強化。
+ * 
+ * v1.0.1
+ *   - [FIX] questions配列末尾の構文エラー (Unexpected token 'function') の解消。
+ *   - Chrome拡張由来のコンソールエラーノイズ切り分け完了。
+ * 
+ * v1.0.0
+ *   - プロトタイプ初期リリース。
+ * =========================================================================
+ */
+
 (function () {
   const container = document.getElementById('diagnosis-quiz-container');
   const startBtn = document.getElementById('start-diagnosis-btn');
   const config = window.DIAGNOSIS_CONFIG || {};
 
+  // UX用の汎用エラーメッセージ
+  const ERROR_MSG_DEFAULT = '現在アクセスが集中しています。恐れ入りますが、しばらく時間を置いて再度お試しください。';
+
   if (!container || !startBtn) return;
 
-  const questions = [
+  const questions =[
     {
       key: 'assignment_status',
       title: '現在の海外赴任状況を教えてください',
-      options: [
+      options:[
         { label: '赴任が正式に決まっている', value: 4 },
         { label: '打診・候補段階', value: 3 },
         { label: '将来的に可能性がある', value: 2 }
@@ -18,7 +42,7 @@
     {
       key: 'english_level',
       title: '英語での会議・説明にどの程度不安がありますか',
-      options: [
+      options:[
         { label: 'かなり不安がある', value: 4 },
         { label: 'やや不安がある', value: 3 },
         { label: '少し不安がある', value: 2 },
@@ -28,7 +52,7 @@
     {
       key: 'negotiation_level',
       title: '現地メンバーや取引先との調整・交渉に不安がありますか',
-      options: [
+      options:[
         { label: 'かなり不安がある', value: 4 },
         { label: 'やや不安がある', value: 3 },
         { label: '少し不安がある', value: 2 },
@@ -38,7 +62,7 @@
     {
       key: 'field_issue_level',
       title: '工場・店舗・現場対応の英語に不安がありますか',
-      options: [
+      options:[
         { label: 'かなり不安がある', value: 4 },
         { label: 'やや不安がある', value: 3 },
         { label: '少し不安がある', value: 2 },
@@ -48,7 +72,7 @@
     {
       key: 'family_support_level',
       title: 'ご家族の生活立ち上げや生活英語にも不安がありますか',
-      options: [
+      options:[
         { label: 'かなり不安がある', value: 4 },
         { label: 'やや不安がある', value: 3 },
         { label: '少し不安がある', value: 2 },
@@ -58,7 +82,7 @@
     {
       key: 'priority_issue',
       title: '今もっとも整理したいテーマは何ですか',
-      options: [
+      options:[
         { label: '英語力', value: 4 },
         { label: '交渉・調整', value: 4 },
         { label: '現場対応', value: 4 },
@@ -113,6 +137,49 @@
     statusEl.textContent = message || '';
     statusEl.className = 'diagnosis-status';
     if (type) statusEl.classList.add(`is-${type}`);
+  }
+
+  /**
+   *[v1.1.0 追加] エラー用のモーダルを動的に生成・表示する
+   */
+  function showErrorModal(message) {
+    // 既存のモーダルがあれば削除
+    const existingModal = document.getElementById('diagnosis-error-modal');
+    if (existingModal) existingModal.remove();
+
+    const modalHtml = `
+      <div id="diagnosis-error-modal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; transition: opacity 0.3s ease;">
+        <div style="background: var(--bg-secondary, #0f172a); border: 1px solid var(--border-subtle, rgba(255,255,255,0.1)); padding: 40px; border-radius: 24px; max-width: 420px; width: 90%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.6); transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+          <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(239, 68, 68, 0.1); color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; margin: 0 auto 24px;">!</div>
+          <h4 style="color: #ffffff; font-size: 1.25rem; font-weight: 700; margin-bottom: 16px; font-family: sans-serif;">通信エラー</h4>
+          <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin-bottom: 32px;">
+            ${escapeHtml(message)}
+          </p>
+          <button id="diagnosis-error-modal-close" class="btn btn-outline" style="width: 100%; border: 1px solid #475569; padding: 12px; border-radius: 50px; background: transparent; color: #fff; cursor: pointer; transition: background 0.2s;">閉じる</button>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    const modal = document.getElementById('diagnosis-error-modal');
+    const closeBtn = document.getElementById('diagnosis-error-modal-close');
+    const modalInner = modal.firstElementChild;
+
+    // 表示アニメーション
+    requestAnimationFrame(() => {
+      modal.style.opacity = '1';
+      modalInner.style.transform = 'translateY(0)';
+    });
+
+    // 閉じる処理とホバー効果
+    closeBtn.addEventListener('mouseover', () => closeBtn.style.background = 'rgba(255,255,255,0.05)');
+    closeBtn.addEventListener('mouseout', () => closeBtn.style.background = 'transparent');
+    closeBtn.addEventListener('click', () => {
+      modal.style.opacity = '0';
+      modalInner.style.transform = 'translateY(20px)';
+      setTimeout(() => modal.remove(), 300);
+    });
   }
 
   function startDiagnosis() {
@@ -314,12 +381,11 @@
             form_sync_enabled: formSyncEnabled
           });
 
+          // [v1.1.0 変更] バックエンドからエラーが返された場合のモーダル表示
           if (!result || !result.ok) {
-            const msg =
-              (result && result.message) ||
-              '現在アクセスが集中しています。恐れ入りますが、しばらく時間を置いて再度お試しください。';
-
-            showStatus(msg, 'error');
+            const msg = (result && result.message) ? result.message : ERROR_MSG_DEFAULT;
+            showErrorModal(msg);
+            showStatus('', ''); // 元のテキストメッセージは消す（モーダルで案内するため）
 
             if (submitBtn) {
               submitBtn.disabled = false;
@@ -331,10 +397,10 @@
           renderResult(result.result);
         } catch (error) {
           console.error('submit failed:', error);
-          showStatus(
-            '現在アクセスが集中しています。恐れ入りますが、しばらく時間を置いて再度お試しください。',
-            'error'
-          );
+          
+          //[v1.1.0 変更] ネットワークエラーなどの致命的例外時のモーダル表示
+          showErrorModal(ERROR_MSG_DEFAULT);
+          showStatus('', '');
 
           if (submitBtn) {
             submitBtn.disabled = false;
@@ -446,6 +512,11 @@
       redirect: 'follow'
     });
 
+    // [v1.1.0 追加] ネットワークエラー・5xx系エラー時の明示的な例外スロー
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const rawText = await response.text();
 
     let data;
@@ -460,13 +531,8 @@
 
   function renderResult(result) {
     if (!result) {
-      container.innerHTML = `
-        <div class="diagnosis-result-card">
-          <p class="diagnosis-status is-error">
-            結果の表示に失敗しました。恐れ入りますが、時間を置いて再度お試しください。
-          </p>
-        </div>
-      `;
+      // 予期せぬ描画エラー
+      showErrorModal(ERROR_MSG_DEFAULT);
       return;
     }
 
