@@ -393,3 +393,249 @@ footer {
 .animate-in {
   animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
+
+/* =========================================================================
+   診断ウィジェット スタイル
+   ========================================================================= */
+
+/* --- 共通カードベース --- */
+.diagnosis-question-card,
+.diagnosis-lead-card,
+.diagnosis-result-card {
+  background: var(--glass-bg, rgba(255,255,255,0.04));
+  border: 1px solid var(--glass-border, rgba(255,255,255,0.1));
+  border-radius: 24px;
+  padding: 40px 36px;
+  max-width: 640px;
+  margin: 0 auto;
+  backdrop-filter: blur(12px);
+}
+
+/* --- 進捗インジケーター --- */
+.diagnosis-progress {
+  font-size: 0.85rem;
+  color: var(--text-muted, #94a3b8);
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+/* --- 設問タイトル --- */
+.diagnosis-question-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary, #f8fafc);
+  text-align: center;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+/* --- 注意書き --- */
+.diagnosis-note {
+  font-size: 0.8rem;
+  color: var(--text-muted, #94a3b8);
+  text-align: center;
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+/* --- 選択肢コンテナ --- */
+.diagnosis-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+/* --- 選択肢ボタン --- */
+.diagnosis-option {
+  display: block;
+  width: 100%;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  color: var(--text-primary, #f8fafc);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  line-height: 1.5;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.diagnosis-option:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.diagnosis-option.active {
+  background: rgba(212, 175, 95, 0.15);
+  border-color: var(--accent-gold, #d4af5f);
+  color: var(--accent-gold, #d4af5f);
+}
+
+.diagnosis-option-label {
+  pointer-events: none;
+}
+
+/* --- ナビゲーション（戻る/次へ） --- */
+.diagnosis-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* --- ステータスメッセージ --- */
+.diagnosis-status {
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 8px 0;
+  min-height: 1.4em;
+  line-height: 1.4;
+}
+
+.diagnosis-status.is-error {
+  color: #f87171;
+}
+
+.diagnosis-status.is-info {
+  color: #94a3b8;
+}
+
+/* --- リードフォーム --- */
+.diagnosis-lead-form {
+  margin-top: 24px;
+}
+
+.diagnosis-lead-form .form-group {
+  margin-bottom: 20px;
+}
+
+.diagnosis-lead-form label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary, #cbd5e1);
+  margin-bottom: 8px;
+}
+
+.diagnosis-lead-form input[type="text"],
+.diagnosis-lead-form input[type="email"] {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: var(--text-primary, #f8fafc);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.diagnosis-lead-form input[type="text"]:focus,
+.diagnosis-lead-form input[type="email"]:focus {
+  outline: none;
+  border-color: var(--accent-gold, #d4af5f);
+}
+
+.diagnosis-lead-form .required {
+  color: #f87171;
+  margin-left: 4px;
+}
+
+.input-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted, #94a3b8);
+  margin-top: 6px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--text-secondary, #cbd5e1);
+  cursor: pointer;
+}
+
+.diagnosis-privacy-note {
+  font-size: 0.75rem;
+  color: var(--text-muted, #94a3b8);
+  text-align: center;
+  margin-top: 16px;
+}
+
+/* --- 診断結果 --- */
+.diagnosis-result-card {
+  text-align: center;
+}
+
+.diagnosis-result-rank {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent-gold, #d4af5f);
+  margin-bottom: 12px;
+}
+
+.diagnosis-result-score {
+  font-size: 0.9rem;
+  color: var(--text-muted, #94a3b8);
+  margin-bottom: 24px;
+}
+
+.diagnosis-result-body {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 20px 24px;
+  text-align: left;
+  margin-bottom: 16px;
+}
+
+.diagnosis-result-body h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-secondary, #cbd5e1);
+  margin-bottom: 8px;
+}
+
+.diagnosis-result-body p {
+  font-size: 0.95rem;
+  color: var(--text-primary, #f8fafc);
+  line-height: 1.7;
+}
+
+/* --- レスポンシブ（スマホ） --- */
+@media (max-width: 640px) {
+  .diagnosis-question-card,
+  .diagnosis-lead-card,
+  .diagnosis-result-card {
+    padding: 28px 20px;
+  }
+
+  .diagnosis-question-title {
+    font-size: 1.1rem;
+  }
+
+  .diagnosis-option {
+    font-size: 0.95rem;
+    padding: 14px 16px;
+  }
+
+  .diagnosis-nav {
+    flex-direction: column-reverse;
+  }
+
+  .diagnosis-nav .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
