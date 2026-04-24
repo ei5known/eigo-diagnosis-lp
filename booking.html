@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>無料個別相談のご予約 | 英語脳育成塾</title>
+  <meta name="description" content="海外赴任サバイバル力診断の結果をもとに、あなただけの学習ロードマップを45分で作成します。完全無料。" />
+  <!-- noindex: 予約ページは検索流入不要 -->
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── booking.html 固有スタイル ── */
+    body { background: var(--bg-primary, #0a0f1e); }
+
+    .booking-page-hero {
+      padding: 60px 0 40px;
+      text-align: center;
+    }
+
+    .booking-page-hero .section-label {
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    .booking-page-hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      color: var(--text-primary, #f8fafc);
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
+
+    .booking-page-hero .hero-desc {
+      font-size: 1rem;
+      color: var(--text-secondary, #cbd5e1);
+      line-height: 1.8;
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+
+    .booking-meta-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .booking-meta-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px;
+      font-size: 0.875rem;
+      color: var(--text-secondary, #cbd5e1);
+    }
+
+    .booking-meta-badge .icon { font-size: 1.1rem; }
+
+    .booking-main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    /* ── ステップインジケーター ── */
+    .booking-steps-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 40px;
+    }
+
+    .bsi-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bsi-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted, #94a3b8);
+      transition: all 0.3s ease;
+    }
+
+    .bsi-dot.active {
+      background: rgba(212,175,95,0.2);
+      border-color: #d4af5f;
+      color: #d4af5f;
+    }
+
+    .bsi-dot.done {
+      background: rgba(74,222,128,0.15);
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .bsi-label {
+      font-size: 0.72rem;
+      color: var(--text-muted, #94a3b8);
+      white-space: nowrap;
+    }
+
+    .bsi-line {
+      width: 60px;
+      height: 2px;
+      background: rgba(255,255,255,0.1);
+      margin-bottom: 20px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 480px) {
+      .bsi-line { width: 30px; }
+    }
+
+    /* ── 完了画面 ── */
+    .booking-complete {
+      text-align: center;
+      padding: 48px 24px;
+      background: rgba(74,222,128,0.05);
+      border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 24px;
+      display: none;
+    }
+
+    .booking-complete-icon { font-size: 3rem; margin-bottom: 16px; }
+    .booking-complete h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary, #f8fafc);
+      margin-bottom: 12px;
+    }
+    .booking-complete p {
+      font-size: 0.95rem;
+      color: var(--text-secondary, #cbd5e1);
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header>
+    <div class="container nav-content">
+      <a href="index.html" class="logo">英語脳育成<span>塾</span></a>
+      <nav>
+        <a href="index.html#diagnosis" class="btn btn-primary" style="padding: 10px 24px; font-size: 0.9rem;">無料診断を始める</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ヒーロー -->
+  <div class="booking-page-hero container">
+    <span class="section-label">Free Consultation</span>
+    <h1>無料個別相談<br><span class="text-gold-gradient">45分・完全無料・Google Meet</span></h1>
+    <p class="hero-desc">
+      AI診断結果をもとに、あなただけの「リスク対策」と「学習ロードマップ」を一緒に作ります。<br>
+      ヒアリングなし。45分フルで<strong>具体的なプランニング</strong>に使います。
+    </p>
+    <div class="booking-meta-row">
+      <div class="booking-meta-badge"><span class="icon">⏱</span> 45分</div>
+      <div class="booking-meta-badge"><span class="icon">💻</span> Google Meet（オンライン）</div>
+      <div class="booking-meta-badge"><span class="icon">🎯</span> 完全無料</div>
+      <div class="booking-meta-badge"><span class="icon">🗺️</span> 学習ロードマップを当日作成</div>
+    </div>
+  </div>
+
+  <!-- メイン -->
+  <div class="booking-main">
+
+    <!-- ステップインジケーター -->
+    <div class="booking-steps-indicator">
+      <div class="bsi-step">
+        <div class="bsi-dot active" id="bsi-dot-1">1</div>
+        <div class="bsi-label">事前カルテ</div>
+      </div>
+      <div class="bsi-line"></div>
+      <div class="bsi-step">
+        <div class="bsi-dot" id="bsi-dot-2">2</div>
+        <div class="bsi-label">日時を選ぶ</div>
+      </div>
+      <div class="bsi-line"></div>
+      <div class="bsi-step">
+        <div class="bsi-dot" id="bsi-dot-3">✓</div>
+        <div class="bsi-label">予約完了</div>
+      </div>
+    </div>
+
+    <!-- STEP 1: 事前カルテ -->
+    <div class="booking-step" id="step-karte">
+      <div class="booking-step-header">
+        <span class="booking-step-badge">STEP 1 / 2</span>
+        <h3>事前カルテ（5問）</h3>
+        <p class="booking-step-note">
+          面談時間をヒアリングではなく「学習プランニング」にフル活用するため、<br>
+          事前にご回答をお願いします。所要時間：約2分。
+        </p>
+      </div>
+
+      <form id="karte-form" class="karte-form" novalidate>
+        <!-- 基本情報 -->
+        <div class="karte-section-label">基本情報</div>
+        <div class="karte-row karte-row-3">
+          <div class="form-group">
+            <label for="karte-last-name">姓 <span class="required">*</span></label>
+            <input type="text" id="karte-last-name" name="last_name" placeholder="山田" required autocomplete="family-name" />
+          </div>
+          <div class="form-group">
+            <label for="karte-first-name">名 <span class="required">*</span></label>
+            <input type="text" id="karte-first-name" name="first_name" placeholder="太郎" required autocomplete="given-name" />
+          </div>
+          <div class="form-group">
+            <label for="karte-email">メールアドレス <span class="required">*</span></label>
+            <input type="email" id="karte-email" name="email" placeholder="you@example.com" required autocomplete="email" />
+          </div>
+        </div>
+
+        <!-- Q1 -->
+        <div class="karte-question">
+          <div class="karte-q-header">
+            <span class="karte-q-num">1問目 / 5問中</span>
+            <p class="karte-q-text">赴任が決まってから、今ご自身の中で一番「気がかりなこと」や「モヤモヤしていること」は何でしょうか？（些細なことでも構いません）</p>
+          </div>
+          <textarea name="q1_concern" id="karte-q1" rows="3" placeholder="例：現地チームへの英語での指示出しが不安。会議で発言できるか心配。など"></textarea>
+        </div>
+
+        <!-- Q2 -->
+        <div class="karte-question">
+          <div class="karte-q-header">
+            <span class="karte-q-num">2問目 / 5問中</span>
+            <p class="karte-q-text">現在の英語力はどのくらいでしょうか？</p>
+          </div>
+          <input type="text" name="q2_english_level" id="karte-q2" placeholder="例：TOEIC 700点、読み書きはできるが話せない、全くの初心者、など" />
+        </div>
+
+        <!-- Q3 -->
+        <div class="karte-question">
+          <div class="karte-q-header">
+            <span class="karte-q-num">3問目 / 5問中</span>
+            <p class="karte-q-text">ご家族は帯同される予定ですか？</p>
+          </div>
+          <div class="karte-radio-group">
+            <label class="karte-radio-label"><input type="radio" name="q3_family" value="単身赴任" /> 単身赴任</label>
+            <label class="karte-radio-label"><input type="radio" name="q3_family" value="家族も同行" /> 家族も同行</label>
+            <label class="karte-radio-label"><input type="radio" name="q3_family" value="まだ未定" /> まだ未定</label>
+            <label class="karte-radio-label"><input type="radio" name="q3_family" value="その他" /> その他</label>
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="karte-question">
+          <div class="karte-q-header">
+            <span class="karte-q-num">4問目 / 5問中</span>
+            <p class="karte-q-text">今後の準備にあたり、週にどのくらい学習の時間を作れそうですか？</p>
+          </div>
+          <div class="karte-radio-group">
+            <label class="karte-radio-label"><input type="radio" name="q4_hours" value="週1〜2時間" /> 週1〜2時間</label>
+            <label class="karte-radio-label"><input type="radio" name="q4_hours" value="週3〜5時間" /> 週3〜5時間</label>
+            <label class="karte-radio-label"><input type="radio" name="q4_hours" value="週6時間以上" /> 週6時間以上</label>
+            <label class="karte-radio-label"><input type="radio" name="q4_hours" value="まだわからない" /> まだわからない</label>
+          </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="karte-question">
+          <div class="karte-q-header">
+            <span class="karte-q-num">5問目 / 5問中</span>
+            <p class="karte-q-text">赴任準備に関して、会社から費用補助は出ますか？</p>
+          </div>
+          <div class="karte-radio-group">
+            <label class="karte-radio-label"><input type="radio" name="q5_budget" value="全額出る" /> 全額出る</label>
+            <label class="karte-radio-label"><input type="radio" name="q5_budget" value="一部出る" /> 一部出る</label>
+            <label class="karte-radio-label"><input type="radio" name="q5_budget" value="完全な自費" /> 完全な自費</label>
+            <label class="karte-radio-label"><input type="radio" name="q5_budget" value="確認中" /> 確認中</label>
+          </div>
+        </div>
+
+        <p id="karte-status" class="diagnosis-status" aria-live="polite"></p>
+        <div class="karte-submit-row">
+          <button type="submit" class="btn btn-primary btn-lg" id="karte-submit-btn">
+            回答を保存してカレンダーへ進む →
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- STEP 2: カレンダー予約 -->
+    <div class="booking-step" id="step-calendar" style="display:none;">
+      <div class="booking-step-header">
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+          <span class="booking-step-badge booking-step-badge--done">✓ STEP 1 完了</span>
+          <span class="booking-step-badge">STEP 2 / 2</span>
+        </div>
+        <h3>ご希望の日時を選んでください</h3>
+        <p class="booking-step-note">
+          Googleカレンダーの空き枠がリアルタイムで表示されます。<br>
+          予約確定後、Google Meet のリンクが記載された確認メールが届きます。
+        </p>
+      </div>
+      <div class="calendar-embed-wrapper">
+        <div id="calendar-embed-container">
+          <iframe
+            src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2x5JMFw_njiOM5SGSs3agaSOKeJ2F_l4deN9gR1yv5_QRUSwrX0yplSQvNTPCQFPd97wdLmlrg?gv=true"
+            width="100%"
+            height="700"
+            frameborder="0"
+            style="border:0; border-radius:16px;"
+            allowfullscreen
+            loading="lazy"
+            title="無料個別相談 予約カレンダー">
+          </iframe>
+        </div>
+        <p style="text-align:center; margin-top:12px;">
+          <a href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2x5JMFw_njiOM5SGSs3agaSOKeJ2F_l4deN9gR1yv5_QRUSwrX0yplSQvNTPCQFPd97wdLmlrg" target="_blank" rel="noopener noreferrer" style="font-size:0.85rem; color:#94a3b8;">カレンダーが表示されない場合はこちら →</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- 予約完了メッセージ（カレンダー側で完結するため参考表示） -->
+    <div class="booking-complete" id="booking-complete">
+      <div class="booking-complete-icon">🎉</div>
+      <h2>ご予約ありがとうございます</h2>
+      <p>
+        確認メール（Google カレンダーから自動送信）をご確認ください。<br>
+        当日は記載の Google Meet リンクからご参加ください。<br><br>
+        面談前日に、担当よりリマインドメールをお送りします。
+      </p>
+    </div>
+
+  </div>
+
+  <!-- フッター -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <div class="logo">英語脳育成<span>塾</span></div>
+          <p style="font-size: 0.9rem; margin-top: 10px;">海外赴任に特化した次世代型英語トレーニング</p>
+        </div>
+        <div style="text-align: right;">
+          <ul style="display: flex; gap: 24px; font-size: 0.9rem; color: var(--text-secondary);">
+            <li><a href="#">プライバシーポリシー</a></li>
+            <li><a href="#">利用規約</a></li>
+            <li><a href="#">運営会社</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-meta">&copy; 2026 英語脳育成塾. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <!-- 事前カルテJS -->
+  <script>
+    window.BOOKING_CONFIG = {
+      karteGasEndpoint: 'https://script.google.com/macros/s/AKfycbyUh3KzwwkU67HsMgBDrEo3XYFuJnsr4gwvV3McHLwWxK8S35BxXqpOOJj3Os_BWo59/exec',
+    };
+  </script>
+  <script src="js/karte-form.js"></script>
+
+</body>
+</html>
