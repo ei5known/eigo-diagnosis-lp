@@ -991,3 +991,130 @@ footer {
 .nav-cta-link:hover {
   background: rgba(212,175,95,0.22);
 }
+
+
+/* =========================================================================
+   診断結果画面 強化スタイル
+   ========================================================================= */
+
+/* ランクバッジ */
+.result-rank-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: fit-content;
+  margin: 0 auto 14px;
+  padding: 10px 28px;
+  border: 2px solid;
+  border-radius: 999px;
+}
+.result-rank-letter {
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+}
+.result-rank-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary, #cbd5e1);
+}
+
+/* 緊急度ラベル */
+.result-urgency-label {
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary, #cbd5e1);
+  margin-bottom: 16px;
+  letter-spacing: 0.04em;
+}
+
+/* メインタイトル（結果） */
+.result-main-title {
+  font-size: 1.15rem !important;
+  margin-bottom: 20px !important;
+}
+
+/* 診断解説ボックス */
+.result-message-box {
+  background: rgba(255,255,255,0.03);
+  border-left: 3px solid var(--accent-gold, #d4af5f);
+  border-radius: 0 12px 12px 0;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+.result-message-box p {
+  font-size: 0.9rem;
+  color: var(--text-secondary, #cbd5e1);
+  line-height: 1.75;
+}
+
+/* メール確認 CTA ブロック */
+.result-email-cta {
+  background: rgba(212,175,95,0.06);
+  border: 1px solid rgba(212,175,95,0.2);
+  border-radius: 16px;
+  padding: 28px 24px;
+  text-align: center;
+  margin-top: 24px;
+}
+.result-email-cta-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+.result-email-cta-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary, #f8fafc);
+  margin-bottom: 10px;
+}
+.result-email-cta-body {
+  font-size: 0.9rem;
+  color: var(--text-secondary, #cbd5e1);
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+.result-email-cta-body strong {
+  color: var(--text-primary, #f8fafc);
+}
+.result-email-cta-note {
+  font-size: 0.78rem;
+  color: var(--text-muted, #64748b);
+}
+
+/* もう一度ボタン（テキストのみ） */
+.btn-text-subtle {
+  background: none;
+  border: none;
+  color: var(--text-muted, #64748b);
+  font-size: 0.82rem;
+  cursor: pointer;
+  padding: 8px 16px;
+  text-decoration: underline;
+  font-family: inherit;
+  transition: color 0.2s;
+}
+.btn-text-subtle:hover { color: var(--text-secondary, #94a3b8); }
+
+/* 診断ネクストステップ（旧スタイル互換） */
+.diagnosis-next-step {
+  background: rgba(212,175,95,0.05);
+  border: 1px solid rgba(212,175,95,0.15);
+  border-radius: 14px;
+  padding: 20px 20px;
+  text-align: center;
+  margin-top: 20px;
+}
+.diagnosis-next-step-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary, #f8fafc);
+  margin-bottom: 8px;
+}
+.diagnosis-next-step-body {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #cbd5e1);
+  line-height: 1.7;
+}
