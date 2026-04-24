@@ -19,6 +19,7 @@
       <a href="#" class="logo">英語脳育成<span>塾</span></a>
       <nav>
         <a href="#diagnosis" class="btn btn-primary" style="padding: 10px 24px; font-size: 0.9rem;">無料診断を始める</a>
+        <a href="#contact" class="nav-cta-link">📅 無料相談を予約</a>
       </nav>
     </div>
   </header>
@@ -206,6 +207,170 @@
     </div>
   </section>
 
+
+  <!-- ===== 無料個別相談 CTA セクション ===== -->
+  <section class="section booking-cta-section" id="contact">
+    <div class="container">
+      <div class="section-header animate-in">
+        <span class="section-label">Free Consultation</span>
+        <h2 class="section-title-large">無料個別相談<br><span class="text-gold-gradient">45分・完全無料</span></h2>
+        <p class="section-desc">
+          AI診断結果をもとに、あなただけの「リスク対策」と「学習ロードマップ」を一緒に作ります。<br>
+          出国までの限られた期間で<strong>何を優先すべきか</strong>を、この1回で明確にします。
+        </p>
+      </div>
+
+      <div class="booking-value-grid animate-in">
+        <div class="booking-value-card">
+          <div class="booking-value-icon">🗺️</div>
+          <h4>あなただけのロードマップ</h4>
+          <p>診断スコアをベースに、出国日から逆算した学習計画を当日作成します。</p>
+        </div>
+        <div class="booking-value-card">
+          <div class="booking-value-icon">⚡</div>
+          <h4>ヒアリングなし・即プランニング</h4>
+          <p>事前カルテで状況を把握するため、45分フルで「具体的な行動計画」に使えます。</p>
+        </div>
+        <div class="booking-value-card">
+          <div class="booking-value-icon">🎯</div>
+          <h4>優先順位の明確化</h4>
+          <p>英語力・交渉・現場・家族それぞれの準備を、重要度×緊急度で整理します。</p>
+        </div>
+      </div>
+
+      <!-- 事前カルテ + カレンダー予約 -->
+      <div class="booking-flow animate-in">
+
+        <!-- STEP 1：事前カルテ -->
+        <div class="booking-step" id="booking-karte-step">
+          <div class="booking-step-header">
+            <span class="booking-step-badge">STEP 1</span>
+            <h3>事前カルテ（5問）に回答する</h3>
+            <p class="booking-step-note">面談時間をヒアリングではなく「プランニング」にフル活用するため、事前にご回答をお願いします。</p>
+          </div>
+
+          <form id="karte-form" class="karte-form" novalidate>
+            <!-- 基本情報 -->
+            <div class="karte-section-label">基本情報</div>
+            <div class="karte-row karte-row-3">
+              <div class="form-group">
+                <label for="karte-last-name">姓 <span class="required">*</span></label>
+                <input type="text" id="karte-last-name" name="last_name" placeholder="山田" required />
+              </div>
+              <div class="form-group">
+                <label for="karte-first-name">名 <span class="required">*</span></label>
+                <input type="text" id="karte-first-name" name="first_name" placeholder="太郎" required />
+              </div>
+              <div class="form-group">
+                <label for="karte-email">メールアドレス <span class="required">*</span></label>
+                <input type="email" id="karte-email" name="email" placeholder="you@example.com" required />
+              </div>
+            </div>
+
+            <!-- Q1 -->
+            <div class="karte-question">
+              <div class="karte-q-header">
+                <span class="karte-q-num">1問目 / 5問中</span>
+                <p class="karte-q-text">赴任が決まってから、今ご自身の中で一番「気がかりなこと」や「モヤモヤしていること」は何でしょうか？（些細なことでも構いません）</p>
+              </div>
+              <textarea name="q1_concern" id="karte-q1" rows="3" placeholder="例：現地のチームに英語で指示を出せるか不安。会議で発言できるか心配。など"></textarea>
+            </div>
+
+            <!-- Q2 -->
+            <div class="karte-question">
+              <div class="karte-q-header">
+                <span class="karte-q-num">2問目 / 5問中</span>
+                <p class="karte-q-text">現在の英語力はどのくらいでしょうか？</p>
+              </div>
+              <input type="text" name="q2_english_level" id="karte-q2" placeholder="例：TOEIC 700点、読み書きはできるが話せない、全くの初心者、など" />
+            </div>
+
+            <!-- Q3 -->
+            <div class="karte-question">
+              <div class="karte-q-header">
+                <span class="karte-q-num">3問目 / 5問中</span>
+                <p class="karte-q-text">ご家族は帯同される予定ですか？</p>
+              </div>
+              <div class="karte-radio-group">
+                <label class="karte-radio-label"><input type="radio" name="q3_family" value="単身赴任" /> 単身赴任</label>
+                <label class="karte-radio-label"><input type="radio" name="q3_family" value="家族も同行" /> 家族も同行</label>
+                <label class="karte-radio-label"><input type="radio" name="q3_family" value="まだ未定" /> まだ未定</label>
+                <label class="karte-radio-label"><input type="radio" name="q3_family" value="その他" /> その他</label>
+              </div>
+            </div>
+
+            <!-- Q4 -->
+            <div class="karte-question">
+              <div class="karte-q-header">
+                <span class="karte-q-num">4問目 / 5問中</span>
+                <p class="karte-q-text">今後の準備にあたり、週にどのくらい学習の時間を作れそうですか？</p>
+              </div>
+              <div class="karte-radio-group">
+                <label class="karte-radio-label"><input type="radio" name="q4_hours" value="週1〜2時間" /> 週1〜2時間</label>
+                <label class="karte-radio-label"><input type="radio" name="q4_hours" value="週3〜5時間" /> 週3〜5時間</label>
+                <label class="karte-radio-label"><input type="radio" name="q4_hours" value="週6時間以上" /> 週6時間以上</label>
+                <label class="karte-radio-label"><input type="radio" name="q4_hours" value="まだわからない" /> まだわからない</label>
+              </div>
+            </div>
+
+            <!-- Q5 -->
+            <div class="karte-question">
+              <div class="karte-q-header">
+                <span class="karte-q-num">5問目 / 5問中</span>
+                <p class="karte-q-text">赴任準備に関して、会社から費用補助は出ますか？</p>
+              </div>
+              <div class="karte-radio-group">
+                <label class="karte-radio-label"><input type="radio" name="q5_budget" value="全額出る" /> 全額出る</label>
+                <label class="karte-radio-label"><input type="radio" name="q5_budget" value="一部出る" /> 一部出る</label>
+                <label class="karte-radio-label"><input type="radio" name="q5_budget" value="完全な自費" /> 完全な自費</label>
+                <label class="karte-radio-label"><input type="radio" name="q5_budget" value="確認中" /> 確認中</label>
+              </div>
+            </div>
+
+            <p id="karte-status" class="diagnosis-status" aria-live="polite"></p>
+            <div class="karte-submit-row">
+              <button type="submit" class="btn btn-primary btn-lg" id="karte-submit-btn">
+                回答を保存してカレンダーへ進む →
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- STEP 2：カレンダー予約（事前カルテ送信後に表示） -->
+        <div class="booking-step" id="booking-calendar-step" style="display:none;">
+          <div class="booking-step-header">
+            <span class="booking-step-badge booking-step-badge--done">✓ STEP 1 完了</span>
+            <span class="booking-step-badge">STEP 2</span>
+            <h3>ご希望の日時を選んで予約を確定する</h3>
+            <p class="booking-step-note">
+              Googleカレンダーの空き状況がリアルタイムで反映されます。<br>
+              Google Meet のリンクが自動発行され、確認メールが届きます。
+            </p>
+          </div>
+
+          <!-- Google Calendar 予約スケジュール埋め込み -->
+          <div class="calendar-embed-wrapper">
+            <div id="calendar-embed-container">
+              <!-- ↓↓↓ Googleカレンダーで予約スケジュールを作成後、埋め込みコードをここに貼る ↓↓↓ -->
+              <div class="calendar-placeholder">
+                <div class="calendar-placeholder-inner">
+                  <p class="calendar-placeholder-icon">📅</p>
+                  <p class="calendar-placeholder-title">カレンダーを設定中です</p>
+                  <p class="calendar-placeholder-note">Googleカレンダーの予約スケジュールIDを設定してください。<br>設定方法は下記の手順を参照してください。</p>
+                  <a href="#" id="calendar-direct-link" class="btn btn-primary" target="_blank" rel="noopener noreferrer" style="display:none;">
+                    カレンダーで直接予約する →
+                  </a>
+                </div>
+              </div>
+              <!-- ↑↑↑ ここまで ↑↑↑ -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer>
     <div class="container">
@@ -239,5 +404,19 @@
   </script>
 
   <script src="js/diagnosis.js"></script>
+
+  <!-- 予約フォーム設定 -->
+  <script>
+    window.BOOKING_CONFIG = {
+      // ★ Googleカレンダーで予約スケジュールを作成後、下記URLを設定してください
+      // 例: 'https://calendar.google.com/calendar/appointments/schedules/XXXXXXXXXXXXXXXXXXXXXXXX'
+      calendarScheduleUrl: '',
+      // ★ 事前カルテデータをスプレッドシートに保存する場合、GASエンドポイントを設定
+      // 診断用GASと同じエンドポイントを使い回すか、専用のGASを用意してください
+      karteGasEndpoint: 'https://script.google.com/macros/s/AKfycbyUh3KzwwkU67HsMgBDrEo3XYFuJnsr4gwvV3McHLwWxK8S35BxXqpOOJj3Os_BWo59/exec',
+      calendarEmbedHeight: '700',
+    };
+  </script>
+  <script src="js/karte-form.js"></script>
 </body>
 </html>
