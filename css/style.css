@@ -639,3 +639,355 @@ footer {
     text-align: center;
   }
 }
+
+
+/* =========================================================================
+   予約セクション・事前カルテ スタイル
+   ========================================================================= */
+
+/* ── CTA セクション全体 ── */
+.booking-cta-section {
+  background: linear-gradient(180deg, var(--bg-primary, #0a0f1e) 0%, var(--bg-secondary, #0f1929) 100%);
+}
+
+/* ── テキストグラデーション（ゴールド） ── */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #d4af5f 0%, #f0d080 50%, #d4af5f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── セクション説明文 ── */
+.section-desc {
+  font-size: 1.05rem;
+  color: var(--text-secondary, #cbd5e1);
+  line-height: 1.8;
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* ── バリューカードグリッド ── */
+.booking-value-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin: 48px 0;
+}
+
+@media (max-width: 768px) {
+  .booking-value-grid { grid-template-columns: 1fr; }
+}
+
+.booking-value-card {
+  background: var(--glass-bg, rgba(255,255,255,0.04));
+  border: 1px solid var(--glass-border, rgba(255,255,255,0.1));
+  border-radius: 20px;
+  padding: 28px 24px;
+  text-align: center;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.booking-value-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(212, 175, 95, 0.3);
+}
+
+.booking-value-icon {
+  font-size: 2rem;
+  margin-bottom: 14px;
+}
+
+.booking-value-card h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary, #f8fafc);
+  margin-bottom: 8px;
+}
+
+.booking-value-card p {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #cbd5e1);
+  line-height: 1.6;
+}
+
+/* ── フロー全体 ── */
+.booking-flow {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+/* ── 各ステップ ── */
+.booking-step {
+  background: var(--glass-bg, rgba(255,255,255,0.04));
+  border: 1px solid var(--glass-border, rgba(255,255,255,0.1));
+  border-radius: 24px;
+  padding: 40px 40px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 640px) {
+  .booking-step { padding: 28px 20px; }
+}
+
+.booking-step-header {
+  margin-bottom: 32px;
+}
+
+.booking-step-badge {
+  display: inline-block;
+  background: rgba(212, 175, 95, 0.15);
+  border: 1px solid rgba(212, 175, 95, 0.4);
+  color: #d4af5f;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+
+.booking-step-badge--done {
+  background: rgba(74, 222, 128, 0.1);
+  border-color: rgba(74, 222, 128, 0.4);
+  color: #4ade80;
+  margin-right: 8px;
+}
+
+.booking-step-header h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary, #f8fafc);
+  margin-bottom: 8px;
+}
+
+.booking-step-note {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #cbd5e1);
+  line-height: 1.6;
+}
+
+/* ── 事前カルテフォーム ── */
+.karte-form {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.karte-section-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-muted, #94a3b8);
+  text-transform: uppercase;
+  margin-bottom: -12px;
+}
+
+/* 基本情報3列 */
+.karte-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .karte-row-3 { grid-template-columns: 1fr; }
+}
+
+.karte-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.karte-form label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary, #cbd5e1);
+}
+
+.karte-form input[type="text"],
+.karte-form input[type="email"],
+.karte-form textarea {
+  width: 100%;
+  padding: 13px 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  color: var(--text-primary, #f8fafc);
+  font-size: 0.95rem;
+  font-family: inherit;
+  line-height: 1.5;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.karte-form input[type="text"]:focus,
+.karte-form input[type="email"]:focus,
+.karte-form textarea:focus {
+  outline: none;
+  border-color: var(--accent-gold, #d4af5f);
+}
+
+.karte-form input::placeholder,
+.karte-form textarea::placeholder {
+  color: rgba(148, 163, 184, 0.5);
+}
+
+/* 設問ブロック */
+.karte-question {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.karte-q-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.karte-q-num {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #d4af5f;
+}
+
+.karte-q-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary, #f8fafc);
+  line-height: 1.5;
+}
+
+/* ラジオボタングループ */
+.karte-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.karte-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 999px;
+  color: var(--text-secondary, #cbd5e1);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  user-select: none;
+}
+
+.karte-radio-label:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.25);
+}
+
+.karte-radio-label input[type="radio"] {
+  accent-color: #d4af5f;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.karte-radio-label:has(input:checked) {
+  background: rgba(212, 175, 95, 0.12);
+  border-color: #d4af5f;
+  color: #d4af5f;
+}
+
+/* 送信行 */
+.karte-submit-row {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+/* ── カレンダー埋め込み ── */
+.calendar-embed-wrapper {
+  margin-top: 24px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* 設定前のプレースホルダー */
+.calendar-placeholder {
+  background: rgba(255,255,255,0.03);
+  border: 1px dashed rgba(255,255,255,0.2);
+  border-radius: 16px;
+  padding: 60px 24px;
+  text-align: center;
+}
+
+.calendar-placeholder-inner {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.calendar-placeholder-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.calendar-placeholder-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary, #f8fafc);
+  margin-bottom: 10px;
+}
+
+.calendar-placeholder-note {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #cbd5e1);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* ── LP診断結果後のCTAリンク ── */
+.consult-cta-inline {
+  display: block;
+  margin-top: 20px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, rgba(212,175,95,0.15), rgba(212,175,95,0.08));
+  border: 1px solid rgba(212,175,95,0.4);
+  border-radius: 14px;
+  text-align: center;
+  color: #d4af5f;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.consult-cta-inline:hover {
+  background: linear-gradient(135deg, rgba(212,175,95,0.25), rgba(212,175,95,0.15));
+  transform: translateY(-2px);
+}
+
+/* ── ナビゲーションの「無料相談」リンク ── */
+.nav-cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  background: rgba(212,175,95,0.12);
+  border: 1px solid rgba(212,175,95,0.4);
+  border-radius: 999px;
+  color: #d4af5f;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.nav-cta-link:hover {
+  background: rgba(212,175,95,0.22);
+}
