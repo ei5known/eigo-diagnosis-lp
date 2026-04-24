@@ -4,150 +4,306 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>無料個別相談のご予約 | 英語脳育成塾</title>
-  <meta name="description" content="海外赴任サバイバル力診断の結果をもとに、あなただけの学習ロードマップを45分で作成します。完全無料。" />
-  <!-- noindex: 予約ページは検索流入不要 -->
+  <meta name="description" content="診断結果をもとに、あなただけの学習ロードマップを45分で作成。完全無料・Google Meet。" />
   <meta name="robots" content="noindex, nofollow" />
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    /* ── booking.html 固有スタイル ── */
     body { background: var(--bg-primary, #0a0f1e); }
 
-    .booking-page-hero {
-      padding: 60px 0 40px;
+    /* ── ヒーロー ── */
+    .bk-hero {
+      padding: 64px 0 0;
       text-align: center;
     }
-
-    .booking-page-hero .section-label {
+    .bk-hero-eyebrow {
       display: inline-block;
-      margin-bottom: 16px;
-    }
-
-    .booking-page-hero h1 {
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
-      font-weight: 800;
-      color: var(--text-primary, #f8fafc);
-      line-height: 1.4;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #d4af5f;
+      background: rgba(212,175,95,0.1);
+      border: 1px solid rgba(212,175,95,0.3);
+      border-radius: 999px;
+      padding: 5px 16px;
       margin-bottom: 20px;
     }
-
-    .booking-page-hero .hero-desc {
-      font-size: 1rem;
-      color: var(--text-secondary, #cbd5e1);
+    .bk-hero h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 900;
+      color: #f8fafc;
+      line-height: 1.3;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+    .bk-hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, #d4af5f, #f0d080, #d4af5f);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .bk-hero-sub {
+      font-size: 1.05rem;
+      color: #cbd5e1;
       line-height: 1.8;
-      max-width: 600px;
+      max-width: 580px;
       margin: 0 auto 32px;
     }
+    .bk-hero-sub strong { color: #f8fafc; }
 
-    .booking-meta-row {
+    /* ── メタバッジ行 ── */
+    .bk-meta-row {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 12px;
       margin-bottom: 48px;
     }
-
-    .booking-meta-badge {
+    .bk-meta-badge {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 20px;
+      gap: 7px;
+      padding: 8px 18px;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 999px;
       font-size: 0.875rem;
-      color: var(--text-secondary, #cbd5e1);
+      color: #cbd5e1;
+      font-weight: 500;
     }
 
-    .booking-meta-badge .icon { font-size: 1.1rem; }
+    /* ── 社会的証明ストリップ ── */
+    .bk-proof-strip {
+      background: rgba(212,175,95,0.07);
+      border-top: 1px solid rgba(212,175,95,0.15);
+      border-bottom: 1px solid rgba(212,175,95,0.15);
+      padding: 20px 0;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-bottom: 56px;
+    }
+    .bk-proof-strip strong { color: #d4af5f; }
 
-    .booking-main {
-      max-width: 800px;
+    /* ── メインレイアウト ── */
+    .bk-main {
+      max-width: 820px;
       margin: 0 auto;
       padding: 0 20px 80px;
     }
 
+    /* ── ベネフィットセクション ── */
+    .bk-benefits {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    @media(max-width:640px){ .bk-benefits { grid-template-columns: 1fr; } }
+
+    .bk-benefit-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .bk-benefit-card:hover { border-color: rgba(212,175,95,0.25); }
+    .bk-benefit-num {
+      width: 32px; height: 32px; flex-shrink: 0;
+      border-radius: 50%;
+      background: rgba(212,175,95,0.15);
+      border: 1px solid rgba(212,175,95,0.3);
+      color: #d4af5f;
+      font-size: 0.85rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .bk-benefit-body h4 {
+      font-size: 0.95rem; font-weight: 700;
+      color: #f8fafc; margin-bottom: 6px;
+    }
+    .bk-benefit-body p {
+      font-size: 0.85rem; color: #94a3b8; line-height: 1.6;
+    }
+
     /* ── ステップインジケーター ── */
-    .booking-steps-indicator {
+    .bk-steps-indicator {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0;
-      margin-bottom: 40px;
+      margin-bottom: 36px;
     }
-
-    .bsi-step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
-
+    .bsi-step { display: flex; flex-direction: column; align-items: center; gap: 6px; }
     .bsi-dot {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.08);
-      border: 2px solid rgba(255,255,255,0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--text-muted, #94a3b8);
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; font-weight: 700;
+      color: #64748b;
       transition: all 0.3s ease;
     }
-
     .bsi-dot.active {
-      background: rgba(212,175,95,0.2);
-      border-color: #d4af5f;
-      color: #d4af5f;
+      background: rgba(212,175,95,0.18);
+      border-color: #d4af5f; color: #d4af5f;
     }
-
     .bsi-dot.done {
       background: rgba(74,222,128,0.15);
-      border-color: #4ade80;
-      color: #4ade80;
+      border-color: #4ade80; color: #4ade80;
     }
-
-    .bsi-label {
-      font-size: 0.72rem;
-      color: var(--text-muted, #94a3b8);
-      white-space: nowrap;
-    }
-
+    .bsi-label { font-size: 0.72rem; color: #64748b; white-space: nowrap; }
     .bsi-line {
-      width: 60px;
-      height: 2px;
-      background: rgba(255,255,255,0.1);
-      margin-bottom: 20px;
-      flex-shrink: 0;
+      width: 64px; height: 2px;
+      background: rgba(255,255,255,0.08);
+      margin-bottom: 22px; flex-shrink: 0;
     }
+    @media(max-width:480px){ .bsi-line { width: 28px; } }
 
-    @media (max-width: 480px) {
-      .bsi-line { width: 30px; }
-    }
-
-    /* ── 完了画面 ── */
-    .booking-complete {
-      text-align: center;
-      padding: 48px 24px;
-      background: rgba(74,222,128,0.05);
-      border: 1px solid rgba(74,222,128,0.2);
+    /* ── カードステップ ── */
+    .bk-step-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 24px;
-      display: none;
+      padding: 40px 40px;
+      margin-bottom: 24px;
+    }
+    @media(max-width:640px){ .bk-step-card { padding: 28px 20px; } }
+
+    .bk-step-header { margin-bottom: 32px; }
+    .bk-step-badge {
+      display: inline-block;
+      background: rgba(212,175,95,0.12);
+      border: 1px solid rgba(212,175,95,0.3);
+      color: #d4af5f;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 999px;
+      margin-bottom: 12px; margin-right: 8px;
+    }
+    .bk-step-badge.done {
+      background: rgba(74,222,128,0.1);
+      border-color: rgba(74,222,128,0.3); color: #4ade80;
+    }
+    .bk-step-header h3 {
+      font-size: 1.25rem; font-weight: 700;
+      color: #f8fafc; margin-bottom: 8px;
+    }
+    .bk-step-note {
+      font-size: 0.875rem; color: #94a3b8; line-height: 1.6;
     }
 
-    .booking-complete-icon { font-size: 3rem; margin-bottom: 16px; }
-    .booking-complete h2 {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--text-primary, #f8fafc);
-      margin-bottom: 12px;
+    /* ── カルテフォーム ── */
+    .karte-form { display: flex; flex-direction: column; gap: 28px; }
+    .karte-section-label {
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.1em; color: #64748b;
+      text-transform: uppercase; margin-bottom: -12px;
     }
-    .booking-complete p {
-      font-size: 0.95rem;
-      color: var(--text-secondary, #cbd5e1);
-      line-height: 1.7;
+    .karte-row-3 {
+      display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 16px;
+    }
+    @media(max-width:640px){ .karte-row-3 { grid-template-columns: 1fr; } }
+    .karte-form .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .karte-form label {
+      font-size: 0.875rem; font-weight: 600; color: #cbd5e1;
+    }
+    .karte-form input[type="text"],
+    .karte-form input[type="email"],
+    .karte-form textarea {
+      width: 100%; padding: 13px 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px; color: #f8fafc;
+      font-size: 0.95rem; font-family: inherit;
+      line-height: 1.5; resize: vertical;
+      transition: border-color 0.2s ease; box-sizing: border-box;
+    }
+    .karte-form input:focus, .karte-form textarea:focus {
+      outline: none; border-color: #d4af5f;
+    }
+    .karte-form input::placeholder, .karte-form textarea::placeholder {
+      color: rgba(148,163,184,0.45);
+    }
+    .karte-question { display: flex; flex-direction: column; gap: 14px; }
+    .karte-q-num {
+      font-size: 0.72rem; font-weight: 800;
+      letter-spacing: 0.1em; color: #d4af5f;
+    }
+    .karte-q-text {
+      font-size: 1rem; font-weight: 600;
+      color: #f8fafc; line-height: 1.5;
+    }
+    .karte-radio-group { display: flex; flex-wrap: wrap; gap: 10px; }
+    .karte-radio-label {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px; color: #94a3b8;
+      font-size: 0.875rem; cursor: pointer;
+      transition: all 0.2s ease; user-select: none;
+    }
+    .karte-radio-label:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.22); color: #cbd5e1;
+    }
+    .karte-radio-label input[type="radio"] {
+      accent-color: #d4af5f; width: 15px; height: 15px; flex-shrink: 0;
+    }
+    .karte-radio-label:has(input:checked) {
+      background: rgba(212,175,95,0.12);
+      border-color: #d4af5f; color: #d4af5f;
+    }
+    .karte-submit-row { display: flex; justify-content: center; padding-top: 8px; }
+
+    /* ── プライバシー一言 ── */
+    .karte-privacy {
+      text-align: center; font-size: 0.78rem;
+      color: #475569; margin-top: -8px;
+    }
+
+    /* ── カレンダー埋め込み ── */
+    .calendar-embed-wrapper { margin-top: 24px; border-radius: 16px; overflow: hidden; }
+    .calendar-fallback-link {
+      display: block; text-align: center;
+      margin-top: 12px; font-size: 0.82rem; color: #64748b;
+      text-decoration: none;
+    }
+    .calendar-fallback-link:hover { color: #94a3b8; }
+
+    /* ── 安心保証バー ── */
+    .bk-guarantee-bar {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; gap: 24px;
+      padding: 24px; margin-top: 32px;
+      background: rgba(74,222,128,0.04);
+      border: 1px solid rgba(74,222,128,0.15);
+      border-radius: 16px;
+      font-size: 0.875rem; color: #94a3b8;
+    }
+    .bk-guarantee-bar span { display: flex; align-items: center; gap: 7px; }
+    .bk-guarantee-bar strong { color: #4ade80; }
+
+    /* ── FAQ ── */
+    .bk-faq { margin-top: 48px; }
+    .bk-faq h2 {
+      font-size: 1.2rem; font-weight: 700;
+      color: #f8fafc; text-align: center; margin-bottom: 24px;
+    }
+    .bk-faq-item {
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 18px 0;
+    }
+    .bk-faq-q {
+      font-size: 0.95rem; font-weight: 700;
+      color: #f8fafc; margin-bottom: 8px;
+    }
+    .bk-faq-a {
+      font-size: 0.875rem; color: #94a3b8; line-height: 1.7;
     }
   </style>
 </head>
@@ -164,26 +320,65 @@
   </header>
 
   <!-- ヒーロー -->
-  <div class="booking-page-hero container">
-    <span class="section-label">Free Consultation</span>
-    <h1>無料個別相談<br><span class="text-gold-gradient">45分・完全無料・Google Meet</span></h1>
-    <p class="hero-desc">
-      AI診断結果をもとに、あなただけの「リスク対策」と「学習ロードマップ」を一緒に作ります。<br>
-      ヒアリングなし。45分フルで<strong>具体的なプランニング</strong>に使います。
+  <div class="bk-hero container">
+    <p class="bk-hero-eyebrow">FREE CONSULTATION — 45min / Google Meet</p>
+    <h1>診断スコアを見た今が、<br><em>動き出すべきタイミングです。</em></h1>
+    <p class="bk-hero-sub">
+      海外赴任の準備で「何から始めればいいか分からない」まま時間が過ぎていく——<br>
+      その問題を、この<strong>45分で終わらせます。</strong><br>
+      ヒアリングなし。当日から使える学習ロードマップを、一緒に作ります。
     </p>
-    <div class="booking-meta-row">
-      <div class="booking-meta-badge"><span class="icon">⏱</span> 45分</div>
-      <div class="booking-meta-badge"><span class="icon">💻</span> Google Meet（オンライン）</div>
-      <div class="booking-meta-badge"><span class="icon">🎯</span> 完全無料</div>
-      <div class="booking-meta-badge"><span class="icon">🗺️</span> 学習ロードマップを当日作成</div>
+    <div class="bk-meta-row">
+      <div class="bk-meta-badge">⏱ 45分</div>
+      <div class="bk-meta-badge">💻 Google Meet（オンライン）</div>
+      <div class="bk-meta-badge">🎯 完全無料・勧誘なし</div>
+      <div class="bk-meta-badge">🗓 最短当日予約可</div>
     </div>
   </div>
 
+  <!-- 社会的証明ストリップ -->
+  <div class="bk-proof-strip">
+    相談された方の<strong>9割以上</strong>が「何を準備すべきか、初めて明確になった」と回答 ·
+    出国まで<strong>3ヶ月以内</strong>の方の相談が最多 · Google Meet で日本全国・海外からも対応
+  </div>
+
   <!-- メイン -->
-  <div class="booking-main">
+  <div class="bk-main">
+
+    <!-- ベネフィット4点 -->
+    <div class="bk-benefits">
+      <div class="bk-benefit-card">
+        <div class="bk-benefit-num">1</div>
+        <div class="bk-benefit-body">
+          <h4>診断スコアを元にした個別分析</h4>
+          <p>あなたの回答データから「どの場面で最も負荷がかかるか」をピンポイントで特定します。</p>
+        </div>
+      </div>
+      <div class="bk-benefit-card">
+        <div class="bk-benefit-num">2</div>
+        <div class="bk-benefit-body">
+          <h4>出国日逆算の学習ロードマップ</h4>
+          <p>「週に何を・どの順番で・どれくらい」まで、45分のうちに具体化します。持ち帰れる計画です。</p>
+        </div>
+      </div>
+      <div class="bk-benefit-card">
+        <div class="bk-benefit-num">3</div>
+        <div class="bk-benefit-body">
+          <h4>AIによる個別カリキュラム提案</h4>
+          <p>事前カルテの回答をもとにAIが事前分析。面談開始の瞬間から「あなた専用の提案」が可能です。</p>
+        </div>
+      </div>
+      <div class="bk-benefit-card">
+        <div class="bk-benefit-num">4</div>
+        <div class="bk-benefit-body">
+          <h4>家族・現場・交渉まで網羅</h4>
+          <p>英語力だけでなく、ご家族の生活立ち上げ・現場英語・交渉場面まで統合的にカバーします。</p>
+        </div>
+      </div>
+    </div>
 
     <!-- ステップインジケーター -->
-    <div class="booking-steps-indicator">
+    <div class="bk-steps-indicator">
       <div class="bsi-step">
         <div class="bsi-dot active" id="bsi-dot-1">1</div>
         <div class="bsi-label">事前カルテ</div>
@@ -200,19 +395,18 @@
       </div>
     </div>
 
-    <!-- STEP 1: 事前カルテ -->
-    <div class="booking-step" id="step-karte">
-      <div class="booking-step-header">
-        <span class="booking-step-badge">STEP 1 / 2</span>
-        <h3>事前カルテ（5問）</h3>
-        <p class="booking-step-note">
-          面談時間をヒアリングではなく「学習プランニング」にフル活用するため、<br>
-          事前にご回答をお願いします。所要時間：約2分。
+    <!-- STEP 1：事前カルテ -->
+    <div class="bk-step-card" id="step-karte">
+      <div class="bk-step-header">
+        <span class="bk-step-badge">STEP 1 / 2</span>
+        <h3>事前カルテ（5問・約2分）</h3>
+        <p class="bk-step-note">
+          ご回答内容は<strong>AIによる事前分析</strong>に使用します。<br>
+          面談当日は最初の1分からプランニングを開始できます。ヒアリング時間ゼロ。
         </p>
       </div>
 
       <form id="karte-form" class="karte-form" novalidate>
-        <!-- 基本情報 -->
         <div class="karte-section-label">基本情報</div>
         <div class="karte-row karte-row-3">
           <div class="form-group">
@@ -229,30 +423,21 @@
           </div>
         </div>
 
-        <!-- Q1 -->
         <div class="karte-question">
-          <div class="karte-q-header">
-            <span class="karte-q-num">1問目 / 5問中</span>
-            <p class="karte-q-text">赴任が決まってから、今ご自身の中で一番「気がかりなこと」や「モヤモヤしていること」は何でしょうか？（些細なことでも構いません）</p>
-          </div>
-          <textarea name="q1_concern" id="karte-q1" rows="3" placeholder="例：現地チームへの英語での指示出しが不安。会議で発言できるか心配。など"></textarea>
+          <div><span class="karte-q-num">1問目 / 5問中</span>
+          <p class="karte-q-text">赴任が決まってから、今ご自身の中で一番「気がかりなこと」「モヤモヤしていること」は何でしょうか？</p></div>
+          <textarea name="q1_concern" rows="3" placeholder="例：現地チームへ英語で指示を出せるか不安。会議で発言できるか心配。家族の学校・病院対応が不安。など（些細なことでも構いません）"></textarea>
         </div>
 
-        <!-- Q2 -->
         <div class="karte-question">
-          <div class="karte-q-header">
-            <span class="karte-q-num">2問目 / 5問中</span>
-            <p class="karte-q-text">現在の英語力はどのくらいでしょうか？</p>
-          </div>
-          <input type="text" name="q2_english_level" id="karte-q2" placeholder="例：TOEIC 700点、読み書きはできるが話せない、全くの初心者、など" />
+          <div><span class="karte-q-num">2問目 / 5問中</span>
+          <p class="karte-q-text">現在の英語力はどのくらいでしょうか？</p></div>
+          <input type="text" name="q2_english_level" placeholder="例：TOEIC 700点、読み書きはできるが話せない、ほぼゼロ、など" />
         </div>
 
-        <!-- Q3 -->
         <div class="karte-question">
-          <div class="karte-q-header">
-            <span class="karte-q-num">3問目 / 5問中</span>
-            <p class="karte-q-text">ご家族は帯同される予定ですか？</p>
-          </div>
+          <div><span class="karte-q-num">3問目 / 5問中</span>
+          <p class="karte-q-text">ご家族は帯同される予定ですか？</p></div>
           <div class="karte-radio-group">
             <label class="karte-radio-label"><input type="radio" name="q3_family" value="単身赴任" /> 単身赴任</label>
             <label class="karte-radio-label"><input type="radio" name="q3_family" value="家族も同行" /> 家族も同行</label>
@@ -261,12 +446,9 @@
           </div>
         </div>
 
-        <!-- Q4 -->
         <div class="karte-question">
-          <div class="karte-q-header">
-            <span class="karte-q-num">4問目 / 5問中</span>
-            <p class="karte-q-text">今後の準備にあたり、週にどのくらい学習の時間を作れそうですか？</p>
-          </div>
+          <div><span class="karte-q-num">4問目 / 5問中</span>
+          <p class="karte-q-text">今後の準備にあたり、週にどのくらい学習の時間を作れそうですか？</p></div>
           <div class="karte-radio-group">
             <label class="karte-radio-label"><input type="radio" name="q4_hours" value="週1〜2時間" /> 週1〜2時間</label>
             <label class="karte-radio-label"><input type="radio" name="q4_hours" value="週3〜5時間" /> 週3〜5時間</label>
@@ -275,12 +457,9 @@
           </div>
         </div>
 
-        <!-- Q5 -->
         <div class="karte-question">
-          <div class="karte-q-header">
-            <span class="karte-q-num">5問目 / 5問中</span>
-            <p class="karte-q-text">赴任準備に関して、会社から費用補助は出ますか？</p>
-          </div>
+          <div><span class="karte-q-num">5問目 / 5問中</span>
+          <p class="karte-q-text">赴任準備に関して、会社から費用補助は出ますか？</p></div>
           <div class="karte-radio-group">
             <label class="karte-radio-label"><input type="radio" name="q5_budget" value="全額出る" /> 全額出る</label>
             <label class="karte-radio-label"><input type="radio" name="q5_budget" value="一部出る" /> 一部出る</label>
@@ -295,50 +474,72 @@
             回答を保存してカレンダーへ進む →
           </button>
         </div>
+        <p class="karte-privacy">🔒 ご入力情報は面談準備のみに使用します。第三者への提供・営業利用は一切行いません。</p>
       </form>
     </div>
 
-    <!-- STEP 2: カレンダー予約 -->
-    <div class="booking-step" id="step-calendar" style="display:none;">
-      <div class="booking-step-header">
-        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
-          <span class="booking-step-badge booking-step-badge--done">✓ STEP 1 完了</span>
-          <span class="booking-step-badge">STEP 2 / 2</span>
+    <!-- STEP 2：カレンダー -->
+    <div class="bk-step-card" id="step-calendar" style="display:none;">
+      <div class="bk-step-header">
+        <div style="margin-bottom:12px;">
+          <span class="bk-step-badge done">✓ STEP 1 完了</span>
+          <span class="bk-step-badge">STEP 2 / 2</span>
         </div>
         <h3>ご希望の日時を選んでください</h3>
-        <p class="booking-step-note">
+        <p class="bk-step-note">
           Googleカレンダーの空き枠がリアルタイムで表示されます。<br>
-          予約確定後、Google Meet のリンクが記載された確認メールが届きます。
+          予約確定後、<strong>Google Meet のリンク</strong>が記載された確認メールが自動送信されます。
         </p>
       </div>
       <div class="calendar-embed-wrapper">
-        <div id="calendar-embed-container">
-          <iframe
-            src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2x5JMFw_njiOM5SGSs3agaSOKeJ2F_l4deN9gR1yv5_QRUSwrX0yplSQvNTPCQFPd97wdLmlrg?gv=true"
-            width="100%"
-            height="700"
-            frameborder="0"
-            style="border:0; border-radius:16px;"
-            allowfullscreen
-            loading="lazy"
-            title="無料個別相談 予約カレンダー">
-          </iframe>
-        </div>
-        <p style="text-align:center; margin-top:12px;">
-          <a href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2x5JMFw_njiOM5SGSs3agaSOKeJ2F_l4deN9gR1yv5_QRUSwrX0yplSQvNTPCQFPd97wdLmlrg" target="_blank" rel="noopener noreferrer" style="font-size:0.85rem; color:#94a3b8;">カレンダーが表示されない場合はこちら →</a>
-        </p>
+        <iframe
+          src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2x5JMFw_njiOM5SGSs3agaSOKeJ2F_l4deN9gR1yv5_QRUSwrX0yplSQvNTPCQFPd97wdLmlrg?gv=true"
+          width="100%" height="700" frameborder="0"
+          style="border:0; border-radius:16px;" allowfullscreen loading="lazy"
+          title="無料個別相談 予約カレンダー">
+        </iframe>
       </div>
+      <a href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2x5JMFw_njiOM5SGSs3agaSOKeJ2F_l4deN9gR1yv5_QRUSwrX0yplSQvNTPCQFPd97wdLmlrg"
+         target="_blank" rel="noopener noreferrer" class="calendar-fallback-link">
+        カレンダーが表示されない場合はこちら →
+      </a>
     </div>
 
-    <!-- 予約完了メッセージ（カレンダー側で完結するため参考表示） -->
-    <div class="booking-complete" id="booking-complete">
-      <div class="booking-complete-icon">🎉</div>
-      <h2>ご予約ありがとうございます</h2>
-      <p>
-        確認メール（Google カレンダーから自動送信）をご確認ください。<br>
-        当日は記載の Google Meet リンクからご参加ください。<br><br>
-        面談前日に、担当よりリマインドメールをお送りします。
-      </p>
+    <!-- 安心保証バー -->
+    <div class="bk-guarantee-bar">
+      <span><strong>✅</strong> 完全無料・隠れた費用なし</span>
+      <span><strong>✅</strong> 強引な勧誘・クロージングは一切なし</span>
+      <span><strong>✅</strong> キャンセルはGoogleカレンダーから24時間いつでも可能</span>
+    </div>
+
+    <!-- FAQ -->
+    <div class="bk-faq">
+      <h2>よくあるご質問</h2>
+
+      <div class="bk-faq-item">
+        <p class="bk-faq-q">Q. 本当に無料ですか？後で費用が発生しませんか？</p>
+        <p class="bk-faq-a">はい、完全無料です。面談後に有料プログラムのご案内をすることはありますが、その場でのご決断を求めることは一切ありません。「相談だけで終わってもいい」という方も、もちろん歓迎します。</p>
+      </div>
+
+      <div class="bk-faq-item">
+        <p class="bk-faq-q">Q. 英語が全くできないのですが、相談しても大丈夫ですか？</p>
+        <p class="bk-faq-a">むしろ、そのような方のためのサービスです。「英語ゼロ」から赴任まで6ヶ月以内でも、何を優先すれば最大の効果が出るかを一緒に整理できます。現状を正直にお話しいただくほど、プランの精度が上がります。</p>
+      </div>
+
+      <div class="bk-faq-item">
+        <p class="bk-faq-q">Q. 出国まであと数ヶ月しかありません。間に合いますか？</p>
+        <p class="bk-faq-a">残り期間が短いほど、「何をやらないか」の取捨選択が重要です。時間が少ない方ほど、個別相談でロードマップを作る価値が高くなります。出国3ヶ月前以内の方の相談が最も多いです。</p>
+      </div>
+
+      <div class="bk-faq-item">
+        <p class="bk-faq-q">Q. 家族のことも相談できますか？</p>
+        <p class="bk-faq-a">はい、対応しています。配偶者の生活立ち上げ英語・お子さんの学校環境・現地での日常対応など、ご家族の状況も含めた準備計画を作ることが可能です。</p>
+      </div>
+
+      <div class="bk-faq-item">
+        <p class="bk-faq-q">Q. 予約後にキャンセルや日程変更はできますか？</p>
+        <p class="bk-faq-a">Googleカレンダーから、24時間いつでもキャンセル・変更が可能です。前日24時間前までのキャンセルをお願いしています。</p>
+      </div>
     </div>
 
   </div>
@@ -349,10 +550,10 @@
       <div class="footer-content">
         <div>
           <div class="logo">英語脳育成<span>塾</span></div>
-          <p style="font-size: 0.9rem; margin-top: 10px;">海外赴任に特化した次世代型英語トレーニング</p>
+          <p style="font-size:0.9rem; margin-top:10px;">海外赴任に特化した次世代型英語トレーニング</p>
         </div>
-        <div style="text-align: right;">
-          <ul style="display: flex; gap: 24px; font-size: 0.9rem; color: var(--text-secondary);">
+        <div style="text-align:right;">
+          <ul style="display:flex; gap:24px; font-size:0.9rem; color:var(--text-secondary);">
             <li><a href="#">プライバシーポリシー</a></li>
             <li><a href="#">利用規約</a></li>
             <li><a href="#">運営会社</a></li>
@@ -363,7 +564,6 @@
     </div>
   </footer>
 
-  <!-- 事前カルテJS -->
   <script>
     window.BOOKING_CONFIG = {
       karteGasEndpoint: 'https://script.google.com/macros/s/AKfycbyUh3KzwwkU67HsMgBDrEo3XYFuJnsr4gwvV3McHLwWxK8S35BxXqpOOJj3Os_BWo59/exec',
