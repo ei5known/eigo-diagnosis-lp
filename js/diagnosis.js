@@ -548,9 +548,10 @@
         <div class="diagnosis-nav" style="justify-content:center; margin-top: 24px;">
           <button type="button" class="btn btn-secondary" id="restart-diagnosis-btn">もう一度診断する</button>
         </div>
-        <a href="#contact" class="consult-cta-inline">
-          📅 無料個別相談（45分）を予約する — 診断結果をもとにプランを一緒に作ります →
-        </a>
+        <div class="diagnosis-next-step">
+          <p class="diagnosis-next-step-title">📧 診断結果をメールでお送りしました</p>
+          <p class="diagnosis-next-step-body">ご登録のメールアドレスに診断結果と、<br>無料個別相談（45分）のご案内を送付しました。<br>メールをご確認のうえ、ご興味があればご予約ください。</p>
+        </div>
       </div>
     `;
 
