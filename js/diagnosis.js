@@ -548,6 +548,9 @@
         <div class="diagnosis-nav" style="justify-content:center; margin-top: 24px;">
           <button type="button" class="btn btn-secondary" id="restart-diagnosis-btn">もう一度診断する</button>
         </div>
+        <a href="#contact" class="consult-cta-inline">
+          📅 無料個別相談（45分）を予約する — 診断結果をもとにプランを一緒に作ります →
+        </a>
       </div>
     `;
 
