@@ -420,9 +420,10 @@
       return {
         total_score: total,
         result_rank: 'A',
-        result_label: '赴任前の重点準備が必要な状態',
-        recommended_action:
-          '英語・交渉・現場対応・家族支援を含め、優先順位を整理した個別計画の作成をおすすめします。'
+        result_urgency: 'HIGH',
+        result_label: '今すぐ動かないと、赴任後に後悔するリスクが高い状態です',
+        result_message: 'スコアが示す通り、複数の場面で同時に高い負荷がかかる見込みです。語学・交渉・現場・家族サポートが重なるこの状況は、出国後に「もっと早く準備すれば良かった」という後悔を生みやすいパターンです。',
+        recommended_action: '英語・交渉・現場対応・家族支援それぞれの優先度を整理した「個人別ロードマップ」の作成が、今あなたに最も必要なことです。'
       };
     }
 
@@ -430,18 +431,20 @@
       return {
         total_score: total,
         result_rank: 'B',
-        result_label: '早めの整理で負荷を下げやすい状態',
-        recommended_action:
-          'まずは負荷の高い場面を絞り込み、出国前6〜8か月の行動計画に落とし込むのがおすすめです。'
+        result_urgency: 'MEDIUM',
+        result_label: '準備を始めるなら、今が最後のベストタイミングです',
+        result_message: '現時点では「まだ余裕がある」と感じているかもしれません。しかし赴任まで残り数ヶ月で、語学・業務・生活準備が一気に重なります。今から動いた人と、動かなかった人の差は赴任後3ヶ月で明らかになります。',
+        recommended_action: '負荷が高くなる場面を今のうちに絞り込み、出国前6〜8ヶ月の行動計画に落とし込むことで、準備の質が格段に上がります。'
       };
     }
 
     return {
       total_score: total,
       result_rank: 'C',
-      result_label: '基礎整理から始めれば十分間に合う状態',
-      recommended_action:
-        '現状把握と優先順位づけから始めることで、無理なく準備を進められます。'
+      result_urgency: 'LOW',
+      result_label: '準備のスタートラインに立てています。あとは「何から始めるか」だけです',
+      result_message: '基礎的な不安は少ない状態ですが、「英語は大丈夫だろう」と思っていた方ほど、赴任後に想定外の場面で詰まることがあります。現状を正確に把握してから動き出すことで、限られた時間を最大限に活かせます。',
+      recommended_action: '現状把握と優先順位づけから始めることで、焦らず・無駄なく準備を進められます。あなたのペースに合わせた計画を一緒に作りましょう。'
     };
   }
 
@@ -531,27 +534,50 @@
 
   function renderResult(result) {
     if (!result) {
-      // 予期せぬ描画エラー
       showErrorModal(ERROR_MSG_DEFAULT);
       return;
     }
 
+    const rankColor   = { A: '#f87171', B: '#fbbf24', C: '#4ade80' };
+    const urgencyText = { A: '⚠️ 緊急度：高', B: '⏰ 緊急度：中', C: '✅ 緊急度：低' };
+    const rank  = result.result_rank || 'C';
+    const color = rankColor[rank] || '#d4af5f';
+
     container.innerHTML = `
       <div class="diagnosis-result-card">
-        <p class="diagnosis-result-rank">診断結果：${escapeHtml(result.result_rank || '')} ランク</p>
-        <h3 class="diagnosis-question-title">${escapeHtml(result.result_label || '')}</h3>
-        <p class="diagnosis-result-score">合計スコア：${escapeHtml(String(result.total_score || ''))}</p>
+
+        <div class="result-rank-badge" style="border-color:${color}20; background:${color}12;">
+          <span class="result-rank-letter" style="color:${color};">${escapeHtml(rank)}</span>
+          <span class="result-rank-label">ランク</span>
+        </div>
+
+        <p class="result-urgency-label">${urgencyText[rank] || ''}</p>
+
+        <h3 class="diagnosis-question-title result-main-title">${escapeHtml(result.result_label || '')}</h3>
+
+        <div class="result-message-box">
+          <p>${escapeHtml(result.result_message || '')}</p>
+        </div>
+
         <div class="diagnosis-result-body">
-          <h4>おすすめの行動</h4>
+          <h4>📌 今のあなたへのアドバイス</h4>
           <p>${escapeHtml(result.recommended_action || '')}</p>
         </div>
-        <div class="diagnosis-nav" style="justify-content:center; margin-top: 24px;">
-          <button type="button" class="btn btn-secondary" id="restart-diagnosis-btn">もう一度診断する</button>
+
+        <div class="result-email-cta">
+          <p class="result-email-cta-icon">📧</p>
+          <p class="result-email-cta-title">診断結果をメールでお送りしました</p>
+          <p class="result-email-cta-body">
+            ご登録のアドレスに<strong>診断結果と無料個別相談のご案内</strong>を送付しました。<br>
+            メールをご確認のうえ、ご興味があればそのままご予約いただけます。
+          </p>
+          <p class="result-email-cta-note">※迷惑メールフォルダをご確認ください。</p>
         </div>
-        <div class="diagnosis-next-step">
-          <p class="diagnosis-next-step-title">📧 診断結果をメールでお送りしました</p>
-          <p class="diagnosis-next-step-body">ご登録のメールアドレスに診断結果と、<br>無料個別相談（45分）のご案内を送付しました。<br>メールをご確認のうえ、ご興味があればご予約ください。</p>
+
+        <div style="text-align:center; margin-top:16px;">
+          <button type="button" class="btn-text-subtle" id="restart-diagnosis-btn">もう一度診断する</button>
         </div>
+
       </div>
     `;
 
