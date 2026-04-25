@@ -383,8 +383,8 @@
 
           // [v1.1.0 変更] バックエンドからエラーが返された場合のモーダル表示
           if (!result || !result.ok) {
-            const msg = (result && result.message) ? result.message : ERROR_MSG_DEFAULT;
-            showErrorModal(msg);
+            // v2.x.x: サーバーの生メッセージをユーザーに見せず常に日本語メッセージを使用
+            showErrorModal(ERROR_MSG_DEFAULT);
             showStatus('', ''); // 元のテキストメッセージは消す（モーダルで案内するため）
 
             if (submitBtn) {
@@ -572,6 +572,13 @@
             メールをご確認のうえ、ご興味があればそのままご予約いただけます。
           </p>
           <p class="result-email-cta-note">※迷惑メールフォルダをご確認ください。</p>
+        </div>
+
+        <div class="result-booking-cta">
+          <a href="booking.html" class="btn btn-primary result-booking-btn">
+            無料個別相談を予約する（完全無料・Google Meet）
+          </a>
+          <p class="result-booking-note">所要時間45分 ／ 事前カルテ5問（約2分）</p>
         </div>
 
         <div style="text-align:center; margin-top:16px;">
