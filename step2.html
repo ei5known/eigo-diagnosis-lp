@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>面談前アンケート — 英語脳育成塾</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--
+    // ============================================================
+    // FILE: step2.html
+    // VERSION: v1.0.0
+    // DATE: 2026-04-25
+    // PURPOSE: 面談前の詳細アンケート（STEP2）
+    //   - 対象：booking.htmlで予約完了済みの方のみ
+    //   - 目的：AI個別8週間カリキュラム作成のための詳細情報収集
+    //   - 設問：Q6〜Q9の4問（英語力・赴任時期・学習時間・不安）
+    //   - 送信先：GAS（STEP2専用エンドポイント）
+    // ============================================================
+  -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="s2-header">
+    <div class="s2-header__inner">
+      <span class="s2-header__brand">英語脳育成塾</span>
+      <span class="s2-header__tag">面談前アンケート</span>
+    </div>
+  </header>
+
+  <main class="s2-main">
+
+    <!-- ヒーローセクション -->
+    <section class="s2-hero">
+      <div class="s2-hero__badge">STEP 2 / 2</div>
+      <h1 class="s2-hero__title">
+        あなただけの<br>
+        <span class="text-gold">8週間カリキュラム</span>を<br>
+        事前に準備します
+      </h1>
+      <p class="s2-hero__sub">
+        以下の4問にお答えいただくと、担当コーチがAIを活用して<br>
+        面談当日までにあなた専用のカリキュラム案を作成します。<br>
+        <strong>所要時間：約2分</strong>
+      </p>
+
+      <!-- 価値訴求バー -->
+      <div class="s2-value-bar">
+        <div class="s2-value-item">
+          <span class="s2-value-icon">🎯</span>
+          <span>あなたの状況に最適化</span>
+        </div>
+        <div class="s2-value-item">
+          <span class="s2-value-icon">🤖</span>
+          <span>AIが事前分析</span>
+        </div>
+        <div class="s2-value-item">
+          <span class="s2-value-icon">⚡</span>
+          <span>面談初日から実践的</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- フォームセクション -->
+    <section class="s2-form-section">
+      <div class="s2-form-card">
+
+        <!-- プログレスインジケーター -->
+        <div class="s2-progress">
+          <div class="s2-progress__bar">
+            <div class="s2-progress__fill" id="progressFill"></div>
+          </div>
+          <span class="s2-progress__label" id="progressLabel">Q1 / 4</span>
+        </div>
+
+        <form id="step2Form">
+
+          <!-- Q6：現在の英語力 -->
+          <div class="s2-question" id="q6-block" data-step="1">
+            <div class="s2-question__num">Q1<span class="s2-question__total"> / 4</span></div>
+            <div class="s2-question__text">
+              現在の英語力に最も近いものを教えてください
+            </div>
+            <div class="s2-choices">
+              <label class="s2-choice">
+                <input type="radio" name="q6_english_level" value="beginner" required>
+                <span class="s2-choice__box">
+                  <span class="s2-choice__icon">🔰</span>
+                  <span class="s2-choice__label">ほぼゼロ</span>
+                  <span class="s2-choice__desc">日常会話もほとんど話せない</span>
+                </span>
+              </label>
+              <label class="s2-choice">
+                <input type="radio" name="q6_english_level" value="basic">
+                <span class="s2-choice__box">
+                  <span class="s2-choice__icon">💬</span>
+                  <span class="s2-choice__label">日常会話程度</span>
+                  <span class="s2-choice__desc">簡単なやり取りはできる</span>
+                </span>
+              </label>
+              <label class="s2-choice">
+                <input type="radio" name="q6_english_level" value="intermediate">
+                <span class="s2-choice__box">
+                  <span class="s2-choice__icon">📊</span>
+                  <span class="s2-choice__label">TOEIC 600前後</span>
+                  <span class="s2-choice__desc">業務でなんとか対応できる</span>
+                </span>
+              </label>
+              <label class="s2-choice">
+                <input type="radio" name="q6_english_level" value="advanced">
+                <span class="s2-choice__box">
+                  <span class="s2-choice__icon">🏆</span>
+                  <span class="s2-choice__label">TOEIC 800以上</span>
+                  <span class="s2-choice__desc">ビジネス英語に自信がある</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Q7：赴任予定時期 -->
+          <div class="s2-question" id="q7-block" data-step="2" style="display:none;">
+            <div class="s2-question__num">Q2<span class="s2-question__total"> / 4</span></div>
+            <div class="s2-question__text">
+              海外赴任の予定時期はいつ頃ですか？
+            </div>
+            <div class="s2-choices">
+              <label class="s2-choice">
+                <input type="radio" name="q7_timing" value="within_3m" required>
+                <span class="s2-choice__box">
+                  <span class="s2-choice__icon">🚨</span>
+                  <span class="s2-choice__label">3か月以内</span>
+                  <span class="s2-choice__desc">すぐに動き出す必要がある</span>
+                </span>
+              </label>
+              <label class="s2-choice">
+                <input type="radio" name="q7_timing" value="3_to_6m">
+                <span class="s2-choice__box">
+                  <span class="s2-choice__icon">📅</span>
+                  <span class="s2-choice__label">3〜6か月後</span>
+                  <span class="s2-choice__desc">計画的に準備を進めたい</span>
+                </span>
+              </label>
+              <label class="s2-choice">
+                <input type="radio" name="q7_timing" value="6m_to_1y">
+                <span class="s2-choice__box">
+                  <span class="s2-choice__icon">🗓️</span>
+                  <span class="s2-choice__label">6か月〜1年後</span>
+                  <span class="s2-choice__desc">じっくり基礎から固めたい</span>
+                </span>
+              </label>
+              <label class="s2-choice">
+                <input type="radio" name="q7_timing" value="undecided">
+                <span class="s2-choice__box">
+                  <span class="s2-choice__icon">❓</span>
+                  <span class="s2-choice__label">未定・赴任中</span>
+                  <span class="s2-choice__desc">時期は決まっていない／すでに赴任中</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Q8：週の学習可能時間 -->
+          <div class="s2-question" id="q8-block" data-step="3" style="display:none;">
+            <div class="s2-question__num">Q3<span class="s2-question__total"> / 4</span></div>
+            <div class="s2-question__text">
+              1週間に英語学習へ使える時間はどれくらいですか？
+            </div>
+            <div class="s2-choices">
+              <label class="s2-choice">
+                <input type="radio" name="q8_hours" value="1_2h" required>
+                <span class="s2-choice__box">
+                  <span class="s2-choice__icon">🕐</span>
+                  <span class="s2-choice__label">週1〜2時間</span>
+                  <span class="s2-choice__desc">隙間時間を活用したい</span>
+                </span>
+              </label>
+              <label class="s2-choice">
+                <input type="radio" name="q8_hours" value="3_5h">
+                <span class="s2-choice__box">
+                  <span class="s2-choice__icon">🕒</span>
+                  <span class="s2-choice__label">週3〜5時間</span>
+                  <span class="s2-choice__desc">毎日30分〜1時間程度</span>
+                </span>
+              </label>
+              <label class="s2-choice">
+                <input type="radio" name="q8_hours" value="6_10h">
+                <span class="s2-choice__box">
+                  <span class="s2-choice__icon">🕕</span>
+                  <span class="s2-choice__label">週6〜10時間</span>
+                  <span class="s2-choice__desc">本格的に時間を確保できる</span>
+                </span>
+              </label>
+              <label class="s2-choice">
+                <input type="radio" name="q8_hours" value="10h_plus">
+                <span class="s2-choice__box">
+                  <span class="s2-choice__icon">🔥</span>
+                  <span class="s2-choice__label">週10時間以上</span>
+                  <span class="s2-choice__desc">集中的に取り組める</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Q9：最大の不安（自由記述） -->
+          <div class="s2-question" id="q9-block" data-step="4" style="display:none;">
+            <div class="s2-question__num">Q4<span class="s2-question__total"> / 4</span></div>
+            <div class="s2-question__text">
+              今、海外赴任に向けて<strong>最も不安に感じていること</strong>を<br>
+              自由に教えてください
+            </div>
+            <p class="s2-question__hint">
+              ※ 正解はありません。あなたの言葉でそのままお書きください。<br>
+              この内容がAIカリキュラム作成の最重要データになります。
+            </p>
+            <textarea
+              name="q9_anxiety"
+              id="q9_anxiety"
+              class="s2-textarea"
+              rows="5"
+              placeholder="例：会議で意見を求められたとき、頭が真っ白になってしまうのが怖いです。英語でとっさに判断を伝える練習をしたいです。"
+              required
+            ></textarea>
+            <div class="s2-char-count">
+              <span id="charCount">0</span> 文字
+            </div>
+          </div>
+
+          <!-- ナビゲーションボタン -->
+          <div class="s2-nav">
+            <button type="button" class="s2-btn s2-btn--back" id="backBtn" style="display:none;" onclick="prevStep()">
+              ← 前の質問
+            </button>
+            <button type="button" class="s2-btn s2-btn--next" id="nextBtn" onclick="nextStep()">
+              次の質問 →
+            </button>
+            <button type="submit" class="s2-btn s2-btn--submit" id="submitBtn" style="display:none;">
+              🚀 送信して面談準備を完了する
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+    <!-- 安心感バー -->
+    <section class="s2-trust">
+      <div class="s2-trust__items">
+        <div class="s2-trust__item">
+          <span>🔒</span>
+          <span>回答は面談担当者のみ閲覧</span>
+        </div>
+        <div class="s2-trust__item">
+          <span>🤝</span>
+          <span>入力内容で断られることはありません</span>
+        </div>
+        <div class="s2-trust__item">
+          <span>📋</span>
+          <span>回答をもとにAIがカリキュラム案を事前作成</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 完了画面（送信後に表示） -->
+    <section class="s2-complete" id="completeSection" style="display:none;">
+      <div class="s2-complete__icon">✅</div>
+      <h2 class="s2-complete__title">ありがとうございます！</h2>
+      <p class="s2-complete__text">
+        回答を受け取りました。<br>
+        担当コーチがAIを活用して、あなた専用の<br>
+        <strong>8週間カリキュラム案</strong>を面談当日までに準備します。
+      </p>
+      <div class="s2-complete__next">
+        <p>📅 <strong>面談当日</strong>、Google Meetのリンクへアクセスしてください。</p>
+        <p>ご不明な点は、予約確認メールにてご確認ください。</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="s2-footer">
+    <p>© 英語脳育成塾 — 海外赴任に特化した次世代型英語トレーニング</p>
+  </footer>
+
+  <script>
+  // ============================================================
+  // step2.js インライン
+  // v1.0.0  2026-04-25  初版
+  //   - 4問ワンステップ表示（1問ずつ表示・プログレスバー連動）
+  //   - ラジオ選択で自動的に次の問へ進む
+  //   - GASへ送信・完了画面表示
+  // ============================================================
+
+  const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbw5g6HZG8uKaqF5jF0_7aRsSolNqnBM2OM-oVeFD5sXzKIuXErGA5b7vj26QvY3pfo/exec';
+
+  const STEPS = ['q6-block', 'q7-block', 'q8-block', 'q9-block'];
+  let currentStep = 0;
+
+  // URLパラメータからメール・名前を取得（予約メールのリンクから渡される想定）
+  const urlParams = new URLSearchParams(window.location.search);
+  const userEmail = urlParams.get('email') || '';
+  const userName  = urlParams.get('name')  || '';
+
+  // プログレス更新
+  function updateProgress() {
+    const pct = ((currentStep) / STEPS.length) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = 'Q' + (currentStep + 1) + ' / ' + STEPS.length;
+  }
+
+  // 次の質問へ
+  function nextStep() {
+    const current = document.getElementById(STEPS[currentStep]);
+
+    // バリデーション（Q9以外はラジオ必須）
+    if (currentStep < 3) {
+      const radios = current.querySelectorAll('input[type="radio"]');
+      const checked = Array.from(radios).some(r => r.checked);
+      if (!checked) {
+        showValidationMsg(current);
+        return;
+      }
+    }
+
+    // 次へ
+    current.style.display = 'none';
+    currentStep++;
+    const next = document.getElementById(STEPS[currentStep]);
+    next.style.display = 'block';
+    next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    updateProgress();
+    updateNavButtons();
+  }
+
+  // 前の質問へ
+  function prevStep() {
+    document.getElementById(STEPS[currentStep]).style.display = 'none';
+    currentStep--;
+    document.getElementById(STEPS[currentStep]).style.display = 'block';
+    updateProgress();
+    updateNavButtons();
+  }
+
+  // ナビボタン表示切替
+  function updateNavButtons() {
+    const backBtn   = document.getElementById('backBtn');
+    const nextBtn   = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+
+    backBtn.style.display   = currentStep > 0 ? 'inline-flex' : 'none';
+    nextBtn.style.display   = currentStep < STEPS.length - 1 ? 'inline-flex' : 'none';
+    submitBtn.style.display = currentStep === STEPS.length - 1 ? 'inline-flex' : 'none';
+  }
+
+  // ラジオ選択で自動次進み
+  document.querySelectorAll('.s2-question input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (currentStep < STEPS.length - 1) {
+        setTimeout(() => nextStep(), 400);
+      }
+    });
+  });
+
+  // バリデーションメッセージ
+  function showValidationMsg(block) {
+    let msg = block.querySelector('.s2-validation-msg');
+    if (!msg) {
+      msg = document.createElement('p');
+      msg.className = 's2-validation-msg';
+      msg.textContent = '選択肢を1つお選びください';
+      block.appendChild(msg);
+    }
+    msg.style.display = 'block';
+    setTimeout(() => { msg.style.display = 'none'; }, 2000);
+  }
+
+  // 文字数カウント
+  const textarea = document.getElementById('q9_anxiety');
+  if (textarea) {
+    textarea.addEventListener('input', () => {
+      document.getElementById('charCount').textContent = textarea.value.length;
+    });
+  }
+
+  // フォーム送信
+  document.getElementById('step2Form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '送信中...';
+
+    const formData = new FormData(e.target);
+    const payload = {
+      form_type:       'step2_detail',
+      email:           userEmail,
+      name:            userName,
+      q6_english_level: formData.get('q6_english_level') || '',
+      q7_timing:       formData.get('q7_timing')        || '',
+      q8_hours:        formData.get('q8_hours')         || '',
+      q9_anxiety:      formData.get('q9_anxiety')       || '',
+      submitted_at:    new Date().toISOString()
+    };
+
+    try {
+      await fetch(GAS_ENDPOINT, {
+        method: 'POST',
+        mode:   'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.warn('GAS送信エラー（非ブロッキング）:', err);
+    }
+
+    // 完了画面表示
+    document.querySelector('.s2-form-section').style.display = 'none';
+    document.querySelector('.s2-trust').style.display = 'none';
+    document.getElementById('completeSection').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // 初期化
+  updateProgress();
+  updateNavButtons();
+  </script>
+
+</body>
+</html>
