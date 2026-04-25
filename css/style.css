@@ -1147,3 +1147,370 @@ footer {
   font-size: 0.85rem;
   color: #555;
 }
+
+/* ============================================================
+   STEP2 詳細アンケート（step2.html）専用スタイル
+   v1.0.0  2026-04-25  初版追加
+   - 4問ワンステップ表示フォーム
+   - プログレスバー
+   - カード型選択肢（アイコン付き）
+   - 完了画面
+   ============================================================ */
+
+/* ヘッダー */
+.s2-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--slate-900);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 14px 24px;
+}
+.s2-header__inner {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.s2-header__brand {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--accent-gold);
+}
+.s2-header__tag {
+  font-size: 0.78rem;
+  color: var(--slate-400);
+  background: var(--slate-800);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+/* メイン */
+.s2-main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 16px 80px;
+}
+
+/* ヒーローセクション */
+.s2-hero {
+  text-align: center;
+  padding: 56px 0 40px;
+}
+.s2-hero__badge {
+  display: inline-block;
+  background: var(--accent-blue);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+}
+.s2-hero__title {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.4;
+  margin-bottom: 16px;
+}
+.s2-hero__sub {
+  color: var(--slate-400);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  margin-bottom: 32px;
+}
+
+/* 価値訴求バー */
+.s2-value-bar {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.s2-value-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--slate-300);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+.s2-value-icon {
+  font-size: 1rem;
+}
+
+/* フォームカード */
+.s2-form-section {
+  margin-top: 16px;
+}
+.s2-form-card {
+  background: var(--slate-800);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 32px 28px;
+}
+
+/* プログレスバー */
+.s2-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.s2-progress__bar {
+  flex: 1;
+  height: 6px;
+  background: var(--slate-700);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.s2-progress__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-gold), var(--accent-gold-light));
+  border-radius: 3px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+.s2-progress__label {
+  font-size: 0.82rem;
+  color: var(--slate-400);
+  white-space: nowrap;
+  min-width: 48px;
+}
+
+/* 設問ブロック */
+.s2-question {
+  animation: fadeInUp 0.3s ease;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.s2-question__num {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  margin-bottom: 10px;
+  letter-spacing: 0.05em;
+}
+.s2-question__total {
+  font-weight: 400;
+  color: var(--slate-500);
+}
+.s2-question__text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.s2-question__hint {
+  font-size: 0.82rem;
+  color: var(--slate-400);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+/* カード型選択肢 */
+.s2-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+@media (max-width: 480px) {
+  .s2-choices { grid-template-columns: 1fr; }
+}
+.s2-choice {
+  cursor: pointer;
+}
+.s2-choice input[type="radio"] {
+  display: none;
+}
+.s2-choice__box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 16px;
+  background: var(--slate-900);
+  border: 2px solid var(--slate-700);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  height: 100%;
+}
+.s2-choice__box:hover {
+  border-color: var(--accent-gold);
+  background: var(--slate-800);
+}
+.s2-choice input[type="radio"]:checked + .s2-choice__box {
+  border-color: var(--accent-gold);
+  background: rgba(212, 168, 83, 0.08);
+  box-shadow: 0 0 0 3px rgba(212, 168, 83, 0.2);
+}
+.s2-choice__icon {
+  font-size: 1.4rem;
+  margin-bottom: 4px;
+}
+.s2-choice__label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.s2-choice__desc {
+  font-size: 0.78rem;
+  color: var(--slate-400);
+  line-height: 1.4;
+}
+
+/* テキストエリア（Q9） */
+.s2-textarea {
+  width: 100%;
+  background: var(--slate-900);
+  border: 2px solid var(--slate-700);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  padding: 14px 16px;
+  resize: vertical;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+.s2-textarea:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+}
+.s2-char-count {
+  text-align: right;
+  font-size: 0.78rem;
+  color: var(--slate-500);
+  margin-bottom: 20px;
+}
+
+/* バリデーションメッセージ */
+.s2-validation-msg {
+  color: #f87171;
+  font-size: 0.82rem;
+  margin-top: 8px;
+}
+
+/* ナビボタン */
+.s2-nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.s2-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+.s2-btn--back {
+  background: var(--slate-700);
+  color: var(--slate-300);
+}
+.s2-btn--back:hover {
+  background: var(--slate-600);
+}
+.s2-btn--next {
+  background: var(--accent-blue);
+  color: #fff;
+  margin-left: auto;
+}
+.s2-btn--next:hover {
+  background: var(--accent-blue-hover);
+}
+.s2-btn--submit {
+  background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-light));
+  color: var(--slate-950);
+  margin-left: auto;
+  padding: 14px 32px;
+  font-size: 1rem;
+  box-shadow: 0 8px 24px rgba(212, 168, 83, 0.35);
+}
+.s2-btn--submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(212, 168, 83, 0.45);
+}
+.s2-btn--submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 安心感バー */
+.s2-trust {
+  margin-top: 24px;
+}
+.s2-trust__items {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.s2-trust__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--slate-500);
+}
+
+/* 完了画面 */
+.s2-complete {
+  text-align: center;
+  padding: 80px 24px;
+}
+.s2-complete__icon {
+  font-size: 4rem;
+  margin-bottom: 24px;
+}
+.s2-complete__title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+.s2-complete__text {
+  color: var(--slate-300);
+  line-height: 1.9;
+  margin-bottom: 32px;
+  font-size: 1rem;
+}
+.s2-complete__next {
+  background: var(--slate-800);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 24px;
+  display: inline-block;
+  text-align: left;
+  max-width: 420px;
+  line-height: 1.9;
+  font-size: 0.92rem;
+  color: var(--slate-300);
+}
+
+/* フッター */
+.s2-footer {
+  text-align: center;
+  padding: 32px 16px;
+  font-size: 0.78rem;
+  color: var(--slate-600);
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 40px;
+}
