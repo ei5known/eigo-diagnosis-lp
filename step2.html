@@ -496,7 +496,7 @@
 
   // プログレス更新
   function updateProgress() {
-    const pct = (currentStep / STEPS.length) * 100;
+    const pct = ((currentStep + 1) / STEPS.length) * 100;  // v2.0.1修正: Q1表示時に25%
     document.getElementById('progressFill').style.width = pct + '%';
     document.getElementById('progressLabel').textContent = 'Q' + (currentStep + 1) + ' / ' + STEPS.length;
   }
@@ -607,12 +607,18 @@
       console.warn('GAS送信エラー（非ブロッキング）:', err);
     }
 
-    // 完了画面表示
+    // 完了画面表示 — v2.0.1: バッジ・h1・intro も非表示に
     document.getElementById('step2Form').style.display = 'none';
     document.querySelector('.step2-progress').style.display = 'none';
     document.querySelector('.step2-value').style.display = 'none';
     document.querySelector('.step2-divider').style.display = 'none';
     document.querySelector('.step2-trust').style.display = 'none';
+    const badge = document.querySelector('.step2-badge');
+    const h1    = document.querySelector('.step2-wrap h1');
+    const intro = document.querySelector('.step2-intro');
+    if (badge) badge.style.display = 'none';
+    if (h1)    h1.style.display    = 'none';
+    if (intro) intro.style.display = 'none';
     document.getElementById('completeSection').style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
