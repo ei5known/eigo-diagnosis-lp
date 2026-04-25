@@ -35,6 +35,13 @@ document.addEventListener('DOMContentLoaded', function() {
       data[key] = value;
     }
 
+    // 名前を結合
+    data.name = ((data.last_name || '') + ' ' + (data.first_name || '')).trim();
+
+    // 日時フィールドを統一
+    data.datetime1 = data.datetime1 || '';
+    data.datetime2 = data.datetime2 || '';
+
     // 送信中表示
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
