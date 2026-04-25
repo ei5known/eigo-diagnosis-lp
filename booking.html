@@ -14,10 +14,7 @@
         診断でご入力いただいた情報をもとに、担当コーチが事前準備を行います。<br>
         ここでは<strong>ご希望の日時とセッション形式のみ</strong>をお知らせください。
       </p>
-      <p class="booking__notice-email">
-        診断で登録済みのメールアドレス宛に、予約確認メールをお送りします。<br>
-        （メールアドレスを変更したい場合は、当日のオリエンテーションでお伝えください）
-      </p>
+
     </section>
 
     <section class="booking__form">
@@ -164,27 +161,8 @@
           <input type="hidden" id="sessionType" name="sessionType" value="google_meet">
         </div>
 
-        <!-- 2. hidden: 診断データ一式（パーソナライズ用） -->
-        <!--
-          // 以下の hidden フィールドは、診断フォーム側で構築した
-          // DIAGNOSIS_SESSION オブジェクトから自動で埋められる前提。
-          // GAS/カレンダー/メール/生成AI が共通で利用する。
-        -->
-        <input type="hidden" id="email"            name="email">
-        <input type="hidden" id="name"             name="name">
-        <input type="hidden" id="role"             name="role">
-        <input type="hidden" id="diagnosisId"      name="diagnosisId">
-        <input type="hidden" id="scoreRank"        name="scoreRank">
-        <input type="hidden" id="answersJson"      name="answersJson">
-        <input type="hidden" id="segmentsJson"     name="segmentsJson">
-        <input type="hidden" id="diagnosisSummary" name="diagnosisSummary">
-
-        <!--
-          // aiProfileVersion:
-          //  - 生成AIが参照するプロファイル構造のバージョン管理用。
-          //  - 将来JSON構造を変更する際の互換性判定に使用する想定。
-        -->
-        <input type="hidden" id="aiProfileVersion" name="aiProfileVersion" value="v1">
+        <!-- hidden: 診断ランク（LPからの引き継ぎ用・任意） -->
+        <input type="hidden" id="scoreRank" name="scoreRank">
 
         <button type="submit" class="btn btn-primary">
           この内容で予約する
