@@ -228,12 +228,26 @@
       const storageEmail = window.localStorage?.getItem('eigo_diagnosis_email')?.trim() || '';
       const resolvedName = presetName || storageName;
       const resolvedEmail = presetEmail || storageEmail;
+      
+      // デバッグログ
+      console.log('booking.html init:', {
+        urlQuery: window.location.search,
+        presetName,
+        presetEmail,
+        storageName,
+        storageEmail,
+        resolvedName,
+        resolvedEmail
+      });
+
       const noteEl = document.getElementById('booking-info-note');
       const infoSection = document.getElementById('booking-basic-info-section');
       const preservedNameField = document.getElementById('booking-preserved-name');
       const preservedEmailField = document.getElementById('booking-preserved-email');
 
       if (resolvedName && resolvedEmail) {
+        console.log('Form will be prefilled with:', { resolvedName, resolvedEmail });
+        
         if (preservedNameField) {
           preservedNameField.value = resolvedName;
         }
@@ -246,6 +260,7 @@
           try {
             window.localStorage.setItem('eigo_diagnosis_name', resolvedName);
             window.localStorage.setItem('eigo_diagnosis_email', resolvedEmail);
+            console.log('Saved to localStorage:', { resolvedName, resolvedEmail });
           } catch (storageError) {
             console.warn('localStorage is unavailable:', storageError);
           }
@@ -261,6 +276,8 @@
             control.disabled = true;
           });
         }
+      } else {
+        console.log('No name/email found. Form will request input.');
       }
     })();
   </script>
