@@ -42,56 +42,61 @@
         -->
 
 
-        <!-- 事前カルテ Q1〜Q5（2026-04-25 v3.1.0 復元） -->
-        <div class="form-group">
-          <label for="q1_concern">Q1. 今一番気がかりなこと <span class="required">必須</span></label>
-          <p class="form-hint">赴任が決まってから、今ご自身の中で一番「気がかりなこと」や「モヤモヤしていること」は何でしょうか？（些細なことでも構いません）</p>
-          <textarea id="q1_concern" name="q1_concern" rows="3" required placeholder="例：英語で会議を仕切れるか不安、現地スタッフとうまくやれるか心配…"></textarea>
-        </div>
+        <!-- 事前カルテ Q1〜Q5（2026-04-25 v3.2.0 設問刷新） -->
 
         <div class="form-group">
-          <label for="q2_english_level">Q2. 現在の英語力 <span class="required">必須</span></label>
-          <p class="form-hint">現在の英語力はどのくらいでしょうか？</p>
-          <select id="q2_english_level" name="q2_english_level" required>
-            <option value="">選択してください</option>
-            <option value="初心者（ほぼゼロ）">初心者（ほぼゼロ）</option>
-            <option value="初級（簡単な挨拶程度）">初級（簡単な挨拶程度）</option>
-            <option value="中級（読み書きはできるが話せない）">中級（読み書きはできるが話せない）</option>
-            <option value="上級（日常会話は問題ない）">上級（日常会話は問題ない）</option>
-            <option value="TOEIC 500点台以下">TOEIC 500点台以下</option>
-            <option value="TOEIC 600〜700点台">TOEIC 600〜700点台</option>
-            <option value="TOEIC 800点以上">TOEIC 800点以上</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Q3. 家族の帯同予定 <span class="required">必須</span></label>
-          <p class="form-hint">ご家族は帯同される予定ですか？</p>
+          <label>Q1. 現在のあなたの主な役割に最も近いものを1つ選んでください。 <span class="required">必須</span></label>
           <div class="karte-radio-group">
-            <label class="karte-radio-label"><input type="radio" name="q3_family" value="単身赴任" required> 単身赴任</label>
-            <label class="karte-radio-label"><input type="radio" name="q3_family" value="家族も同行"> 家族も同行</label>
-            <label class="karte-radio-label"><input type="radio" name="q3_family" value="まだ未定"> まだ未定</label>
+            <label class="karte-radio-label"><input type="radio" name="q1_role" value="A" required> A. 現地拠点（または新拠点）の立ち上げ・事業開発責任者</label>
+            <label class="karte-radio-label"><input type="radio" name="q1_role" value="B"> B. 既存拠点のマネジメント（売上・利益・人材マネジメントなど）の責任者</label>
+            <label class="karte-radio-label"><input type="radio" name="q1_role" value="C"> C. 特定プロジェクト（生産移管、システム導入など）のプロジェクトマネージャー</label>
+            <label class="karte-radio-label"><input type="radio" name="q1_role" value="D"> D. 本社側の立場で、現地拠点をサポート・モニタリングする管理職</label>
+            <label class="karte-radio-label"><input type="radio" name="q1_role" value="E"> E. 上記以外（特殊なミッションや専門職として赴任予定／赴任中）</label>
           </div>
         </div>
 
         <div class="form-group">
-          <label>Q4. 週の学習時間 <span class="required">必須</span></label>
-          <p class="form-hint">今後の準備にあたり、週にどのくらい学習の時間を作れそうですか？</p>
+          <label>Q2. 海外赴任先で想定している（または現在の）チーム構成に最も近いものを選んでください。 <span class="required">必須</span></label>
+          <p class="form-hint">A〜CとD〜Eの両方を選びたい場合は、より重要だと感じるほうを選んでください。</p>
           <div class="karte-radio-group">
-            <label class="karte-radio-label"><input type="radio" name="q4_hours" value="週1〜2時間" required> 週1〜2時間</label>
-            <label class="karte-radio-label"><input type="radio" name="q4_hours" value="週3〜5時間"> 週3〜5時間</label>
-            <label class="karte-radio-label"><input type="radio" name="q4_hours" value="週6時間以上"> 週6時間以上</label>
+            <label class="karte-radio-label"><input type="radio" name="q2_team" value="A" required> A. 現地スタッフのみを直接マネジメントする（日本人部下はいない）</label>
+            <label class="karte-radio-label"><input type="radio" name="q2_team" value="B"> B. 日本人と現地スタッフが混在するチームをマネジメントする</label>
+            <label class="karte-radio-label"><input type="radio" name="q2_team" value="C"> C. 直属の部下はおらず、プロジェクトベースで現地メンバーと関わる</label>
+            <label class="karte-radio-label"><input type="radio" name="q2_team" value="D"> D. 少人数（1〜3名程度）のチームをマネジメントする</label>
+            <label class="karte-radio-label"><input type="radio" name="q2_team" value="E"> E. 中〜大規模（4名以上）のチームをマネジメントする</label>
           </div>
         </div>
 
         <div class="form-group">
-          <label>Q5. 会社からの費用補助 <span class="required">必須</span></label>
-          <p class="form-hint">赴任準備に関して、会社から費用補助は出ますか？</p>
+          <label>Q3. あなたご自身の、これまでの海外・異文化経験に最も近いものを選んでください。 <span class="required">必須</span></label>
           <div class="karte-radio-group">
-            <label class="karte-radio-label"><input type="radio" name="q5_budget" value="全額出る" required> 全額出る</label>
-            <label class="karte-radio-label"><input type="radio" name="q5_budget" value="一部出る"> 一部出る</label>
-            <label class="karte-radio-label"><input type="radio" name="q5_budget" value="完全に自費"> 完全に自費</label>
-            <label class="karte-radio-label"><input type="radio" name="q5_budget" value="確認中"> 確認中</label>
+            <label class="karte-radio-label"><input type="radio" name="q3_experience" value="A" required> A. 海外赴任の経験があり、1年以上現地で勤務したことがある</label>
+            <label class="karte-radio-label"><input type="radio" name="q3_experience" value="B"> B. 長期出張や駐在もどき（数か月〜1年程度）の経験がある</label>
+            <label class="karte-radio-label"><input type="radio" name="q3_experience" value="C"> C. 留学や研修などで、3か月以上海外に滞在したことがある</label>
+            <label class="karte-radio-label"><input type="radio" name="q3_experience" value="D"> D. 短期出張や旅行での短期滞在のみ（3か月未満）</label>
+            <label class="karte-radio-label"><input type="radio" name="q3_experience" value="E"> E. 海外滞在経験はほとんどない／ほぼゼロに近い</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Q4. あなたが今後もっとも頻繁に英語を使うと想定している場面はどれですか。（一番近いものを1つ） <span class="required">必須</span></label>
+          <div class="karte-radio-group">
+            <label class="karte-radio-label"><input type="radio" name="q4_hours" value="A" required> A. 社内会議（本社・現地拠点とのオンライン／対面）</label>
+            <label class="karte-radio-label"><input type="radio" name="q4_hours" value="B"> B. 顧客・取引先との打ち合わせ・商談</label>
+            <label class="karte-radio-label"><input type="radio" name="q4_hours" value="C"> C. 現地スタッフとの1on1・評価面談・日常マネジメント</label>
+            <label class="karte-radio-label"><input type="radio" name="q4_hours" value="D"> D. メール・チャット・レポートなどの文書コミュニケーション</label>
+            <label class="karte-radio-label"><input type="radio" name="q4_hours" value="E"> E. 子どもの学校・医療機関・行政窓口など、家庭関連のやり取り</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Q5. この講義を通じて「いちばん変えたい」と思っていることに最も近いものを選んでください。 <span class="required">必須</span></label>
+          <div class="karte-radio-group">
+            <label class="karte-radio-label"><input type="radio" name="q5_budget" value="A" required> A. 英語での会議や交渉で、黙り込まずに自分の意見・判断を伝えられるようになりたい</label>
+            <label class="karte-radio-label"><input type="radio" name="q5_budget" value="B"> B. 在庫不足・納期遅延・クレームなどのトラブル時にも、英語で冷静に対応できるようになりたい</label>
+            <label class="karte-radio-label"><input type="radio" name="q5_budget" value="C"> C. 家族が直面する学校・生活・医療の問題に対して、保護者・配偶者として英語で対応できるようになりたい</label>
+            <label class="karte-radio-label"><input type="radio" name="q5_budget" value="D"> D. 異文化の前提を理解し、「なぜうまくいかないのか」を理屈として説明できるようになりたい</label>
+            <label class="karte-radio-label"><input type="radio" name="q5_budget" value="E"> E. 海外赴任全体（仕事と家庭）のリスクと目標を整理し、自分なりの「成功パターン」を描けるようになりたい</label>
           </div>
         </div>
 
