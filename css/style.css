@@ -1514,3 +1514,76 @@ footer {
   border-top: 1px solid var(--border-subtle);
   margin-top: 40px;
 }
+
+/* ============================================================
+   booking.html — 氏名・法人名・部署名・メール入力フィールド
+   v4.1.0  2026-04-25  追加
+   変更理由: booking.htmlにテキスト入力フィールドを新規追加したため
+============================================================ */
+
+/* テキスト・メール入力（booking固有） */
+.booking input[type="text"],
+.booking input[type="email"] {
+  width: 100%;
+  padding: 13px 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  color: #f8fafc;
+  font-size: 0.95rem;
+  font-family: inherit;
+  line-height: 1.5;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+.booking input[type="text"]:focus,
+.booking input[type="email"]:focus {
+  outline: none;
+  border-color: #d4af37;
+  background: rgba(212,175,55,0.04);
+}
+.booking input[type="text"]::placeholder,
+.booking input[type="email"]::placeholder {
+  color: rgba(148,163,184,0.5);
+}
+
+/* 姓・名の横並びグループ */
+.name-input-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.name-input-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.name-input-label {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.35);
+  padding-left: 4px;
+}
+
+/* form-group ラベル（booking内） */
+.booking .booking__form .form-group > label,
+.booking .booking__form .form-group--name > label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* form-hint（入力フィールド補足テキスト） */
+.form-hint {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.38);
+  margin-top: 5px;
+  line-height: 1.6;
+}
+
+@media (max-width: 480px) {
+  .name-input-group {
+    grid-template-columns: 1fr;
+  }
+}
