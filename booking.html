@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>予約フォーム | 英語脳育成塾</title>
+  <meta name="description" content="海外赴任前の準備をサポート。氏名・法人情報・事前カルテを入力し、Google Meet面談を予約してください。">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="favicon.ico">
+
+  <!-- reCAPTCHA Enterprise -->
+  <script src="https://www.google.com/recaptcha/enterprise.js?render=6Leu6cAsAAAAAHXDwif8T25Hd37y4_gokyMW6dgt"></script>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header>
+    <div class="container nav-content">
+      <a href="index.html" class="logo">英語脳育成<span>塾</span></a>
+      <nav>
+        <a href="index.html#diagnosis" class="btn btn-primary" style="padding: 10px 24px; font-size: 0.9rem;">診断に戻る</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Booking Form Section -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header animate-in">
+        <span class="section-label">Step 1</span>
+        <h2 class="section-title-large">面談予約フォーム</h2>
+        <p>診断結果に基づき、個別のGoogle Meet面談を予約してください。所要時間は45分です。</p>
+      </div>
+
+      <form id="karte-form" class="booking-form animate-in">
+        <!-- 基本情報 -->
+        <div class="form-section">
+          <h3>基本情報</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="last_name">姓</label>
+              <input type="text" id="last_name" name="last_name" required>
+            </div>
+            <div class="form-group">
+              <label for="first_name">名</label>
+              <input type="text" id="first_name" name="first_name" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="company">法人名</label>
+            <input type="text" id="company" name="company" required>
+          </div>
+          <div class="form-group">
+            <label for="department">部署名</label>
+            <input type="text" id="department" name="department" required>
+          </div>
+          <div class="form-group">
+            <label for="email">メールアドレス</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+        </div>
+
+        <!-- 事前カルテ -->
+        <div class="form-section">
+          <h3>事前カルテ（5問）</h3>
+
+          <div class="form-group">
+            <label>Q1: 現在の役割を教えてください</label>
+            <div class="radio-group">
+              <label class="karte-radio-label">
+                <input type="radio" name="q1" value="管理職・マネージャー" required>
+                <span>管理職・マネージャー</span>
+              </label>
+              <label class="karte-radio-label">
+                <input type="radio" name="q1" value="専門職・スタッフ">
+                <span>専門職・スタッフ</span>
+              </label>
+              <label class="karte-radio-label">
+                <input type="radio" name="q1" value="その他">
+                <span>その他</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Q2: チーム構成について教えてください</label>
+            <div class="radio-group">
+              <label class="karte-radio-label">
+                <input type="radio" name="q2" value="日本人中心" required>
+                <span>日本人中心</span>
+              </label>
+              <label class="karte-radio-label">
+                <input type="radio" name="q2" value="現地スタッフ中心">
+                <span>現地スタッフ中心</span>
+              </label>
+              <label class="karte-radio-label">
+                <input type="radio" name="q2" value="混合">
+                <span>混合</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Q3: 海外経験について教えてください</label>
+            <div class="radio-group">
+              <label class="karte-radio-label">
+                <input type="radio" name="q3" value="初海外赴任" required>
+                <span>初海外赴任</span>
+              </label>
+              <label class="karte-radio-label">
+                <input type="radio" name="q3" value="1-2回経験あり">
+                <span>1-2回経験あり</span>
+              </label>
+              <label class="karte-radio-label">
+                <input type="radio" name="q3" value="3回以上">
+                <span>3回以上</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Q4: 英語を使用する場面を教えてください</label>
+            <div class="radio-group">
+              <label class="karte-radio-label">
+                <input type="radio" name="q4" value="会議・プレゼン中心" required>
+                <span>会議・プレゼン中心</span>
+              </label>
+              <label class="karte-radio-label">
+                <input type="radio" name="q4" value="日常業務・メール中心">
+                <span>日常業務・メール中心</span>
+              </label>
+              <label class="karte-radio-label">
+                <input type="radio" name="q4" value="現場対応・トラブルシューティング">
+                <span>現場対応・トラブルシューティング</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Q5: 英語学習で変えたいことを教えてください</label>
+            <div class="radio-group">
+              <label class="karte-radio-label">
+                <input type="radio" name="q5" value="発音・発話の流暢さ" required>
+                <span>発音・発話の流暢さ</span>
+              </label>
+              <label class="karte-radio-label">
+                <input type="radio" name="q5" value="専門用語・業界知識">
+                <span>専門用語・業界知識</span>
+              </label>
+              <label class="karte-radio-label">
+                <input type="radio" name="q5" value="リスニング・理解力">
+                <span>リスニング・理解力</span>
+              </label>
+              <label class="karte-radio-label">
+                <input type="radio" name="q5" value="その他">
+                <span>その他</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 日時入力 -->
+        <div class="form-section">
+          <h3>希望日時</h3>
+          <p>第1希望と第2希望を選択してください。セッション形式はGoogle Meet固定です。</p>
+          <div class="form-group">
+            <label for="datetime1">第1希望日時</label>
+            <input type="datetime-local" id="datetime1" name="datetime1" required>
+          </div>
+          <div class="form-group">
+            <label for="datetime2">第2希望日時</label>
+            <input type="datetime-local" id="datetime2" name="datetime2" required>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-lg">予約を確定する</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <div class="logo">英語脳育成<span>塾</span></div>
+          <p style="font-size: 0.9rem; margin-top: 10px;">海外赴任に特化した次世代型英語トレーニング</p>
+        </div>
+        <div style="text-align: right;">
+          <ul style="display: flex; gap: 24px; font-size: 0.9rem; color: var(--text-secondary);">
+            <li><a href="#">プライバシーポリシー</a></li>
+            <li><a href="#">利用規約</a></li>
+            <li><a href="#">運営会社</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-meta">
+        &copy; 2026 英語脳育成塾. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Google Calendar Embed (Hidden initially) -->
+  <div id="calendar-embed" style="display: none;">
+    <iframe src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ14Wx5g1oVmiT3gXJPafI2ywCmChpiQDFMHtX3mRcYAiY_3K8fNhBq9PJlzGV3pI15CmjrA-ZbL?gv=true" style="border: 0" width="100%" height="600" frameborder="0"></iframe>
+  </div>
+
+  <script>
+    window.KARTE_CONFIG = {
+      gasEndpoint: 'https://script.google.com/macros/s/AKfycbwdXodudJ22Ememqt9WgumRfo9WFPJdd5-WkAxko7IdPfI-c5zDpa9Epmqxk8ZIbyhD/exec',
+      formType: 'karte',
+      siteKey: '6Leu6cAsAAAAAHXDwif8T25Hd37y4_gokyMW6dgt',
+      recaptchaAction: 'submit_karte'
+    };
+  </script>
+
+  <script src="js/karte-form.js"></script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>面談前アンケート | 英語脳育成塾</title>
+  <meta name="description" content="Google Meet面談前のアンケート。4つの質問に1つずつお答えください。">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="favicon.ico">
+
+  <!-- reCAPTCHA Enterprise -->
+  <script src="https://www.google.com/recaptcha/enterprise.js?render=6Leu6cAsAAAAAHXDwif8T25Hd37y4_gokyMW6dgt"></script>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header>
+    <div class="container nav-content">
+      <a href="index.html" class="logo">英語脳育成<span>塾</span></a>
+      <nav>
+        <a href="booking.html" class="btn btn-primary" style="padding: 10px 24px; font-size: 0.9rem;">予約に戻る</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Step2 Form Section -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header animate-in">
+        <span class="section-label">Step 2</span>
+        <h2 class="section-title-large">面談前アンケート</h2>
+        <p>Google Meet面談（45分）前に、4つの質問にお答えください。1問ずつ進めます。</p>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-container animate-in">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill" style="width: 25%;"></div>
+        </div>
+        <div class="progress-text">1 / 4</div>
+      </div>
+
+      <form id="step2-form" class="step2-form animate-in">
+        <!-- Question 1 -->
+        <div class="question-step" id="step-1">
+          <h3>Q6: 現在の英語力を自己評価してください</h3>
+          <div class="radio-group">
+            <label class="karte-radio-label">
+              <input type="radio" name="q6" value="初級（基本的な挨拶・日常会話）" required>
+              <span>初級（基本的な挨拶・日常会話）</span>
+            </label>
+            <label class="karte-radio-label">
+              <input type="radio" name="q6" value="中級（ビジネス会話が可能）">
+              <span>中級（ビジネス会話が可能）</span>
+            </label>
+            <label class="karte-radio-label">
+              <input type="radio" name="q6" value="上級（ネイティブ並み）">
+              <span>上級（ネイティブ並み）</span>
+            </label>
+          </div>
+          <div class="step-actions">
+            <button type="button" class="btn btn-secondary" id="prev-btn-1" style="display: none;">戻る</button>
+            <button type="button" class="btn btn-primary" id="next-btn-1">次へ</button>
+          </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-step" id="step-2" style="display: none;">
+          <h3>Q7: 海外赴任予定時期を教えてください</h3>
+          <div class="radio-group">
+            <label class="karte-radio-label">
+              <input type="radio" name="q7" value="1ヶ月以内" required>
+              <span>1ヶ月以内</span>
+            </label>
+            <label class="karte-radio-label">
+              <input type="radio" name="q7" value="1-3ヶ月以内">
+              <span>1-3ヶ月以内</span>
+            </label>
+            <label class="karte-radio-label">
+              <input type="radio" name="q7" value="3-6ヶ月以内">
+              <span>3-6ヶ月以内</span>
+            </label>
+            <label class="karte-radio-label">
+              <input type="radio" name="q7" value="6ヶ月以上">
+              <span>6ヶ月以上</span>
+            </label>
+          </div>
+          <div class="step-actions">
+            <button type="button" class="btn btn-secondary" id="prev-btn-2">戻る</button>
+            <button type="button" class="btn btn-primary" id="next-btn-2">次へ</button>
+          </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-step" id="step-3" style="display: none;">
+          <h3>Q8: 1日あたりの英語学習時間を教えてください</h3>
+          <div class="radio-group">
+            <label class="karte-radio-label">
+              <input type="radio" name="q8" value="30分未満" required>
+              <span>30分未満</span>
+            </label>
+            <label class="karte-radio-label">
+              <input type="radio" name="q8" value="30分-1時間">
+              <span>30分-1時間</span>
+            </label>
+            <label class="karte-radio-label">
+              <input type="radio" name="q8" value="1-2時間">
+              <span>1-2時間</span>
+            </label>
+            <label class="karte-radio-label">
+              <input type="radio" name="q8" value="2時間以上">
+              <span>2時間以上</span>
+            </label>
+          </div>
+          <div class="step-actions">
+            <button type="button" class="btn btn-secondary" id="prev-btn-3">戻る</button>
+            <button type="button" class="btn btn-primary" id="next-btn-3">次へ</button>
+          </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-step" id="step-4" style="display: none;">
+          <h3>Q9: 海外赴任で不安に感じていることを自由に書いてください</h3>
+          <textarea name="q9" rows="5" placeholder="例: 会議での発言、家族の生活適応など" required></textarea>
+          <div class="step-actions">
+            <button type="button" class="btn btn-secondary" id="prev-btn-4">戻る</button>
+            <button type="submit" class="btn btn-primary" id="submit-btn">送信する</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <div class="logo">英語脳育成<span>塾</span></div>
+          <p style="font-size: 0.9rem; margin-top: 10px;">海外赴任に特化した次世代型英語トレーニング</p>
+        </div>
+        <div style="text-align: right;">
+          <ul style="display: flex; gap: 24px; font-size: 0.9rem; color: var(--text-secondary);">
+            <li><a href="#">プライバシーポリシー</a></li>
+            <li><a href="#">利用規約</a></li>
+            <li><a href="#">運営会社</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-meta">
+        &copy; 2026 英語脳育成塾. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.STEP2_CONFIG = {
+      gasEndpoint: 'https://script.google.com/macros/s/AKfycbwdXodudJ22Ememqt9WgumRfo9WFPJdd5-WkAxko7IdPfI-c5zDpa9Epmqxk8ZIbyhD/exec',
+      formType: 'step2_detail',
+      siteKey: '6Leu6cAsAAAAAHXDwif8T25Hd37y4_gokyMW6dgt',
+      recaptchaAction: 'submit_step2'
+    };
+  </script>
+
+  <script src="js/step2.js"></script>
+</body>
+</html>
