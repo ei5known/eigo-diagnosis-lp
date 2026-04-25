@@ -220,7 +220,7 @@
       recaptchaAction: 'submit_karte'
     };
 
-    (function() {
+    document.addEventListener('DOMContentLoaded', function() {
       const urlParams = new URLSearchParams(window.location.search);
       const presetName = urlParams.get('name')?.trim() || '';
       const presetEmail = urlParams.get('email')?.trim() || '';
@@ -230,7 +230,7 @@
       const resolvedEmail = presetEmail || storageEmail;
       
       // デバッグログ
-      console.log('booking.html init:', {
+      console.log('booking.html DOMContentLoaded:', {
         urlQuery: window.location.search,
         presetName,
         presetEmail,
@@ -279,7 +279,7 @@
       } else {
         console.log('No name/email found. Form will request input.');
       }
-    })();
+    });
   </script>
 
   <script src="js/karte-form.js"></script>

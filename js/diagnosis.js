@@ -547,6 +547,10 @@
       return;
     }
 
+    console.log('renderResult called with state.lead:', state.lead);
+    console.log('Will generate booking link with name:', encodeURIComponent(state.lead?.name || ''));
+    console.log('Will generate booking link with email:', encodeURIComponent(state.lead?.email || ''));
+
     const rankColor   = { A: '#f87171', B: '#fbbf24', C: '#4ade80' };
     const urgencyText = { A: '⚠️ 緊急度：高', B: '⏰ 緊急度：中', C: '✅ 緊急度：低' };
     const rank  = result.result_rank || 'C';
