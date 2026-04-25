@@ -43,6 +43,42 @@
 
 
         <!-- 事前カルテ Q1〜Q5（2026-04-25 v3.2.0 設問刷新） -->
+        <!-- v4.1.0 2026-04-25: 氏名・法人名・部署名フィールドを追加 -->
+
+        <!-- 氏名 -->
+        <div class="form-group form-group--name">
+          <label>お名前 <span class="required">必須</span></label>
+          <div class="name-input-group">
+            <div class="name-input-wrap">
+              <input type="text" id="last_name" name="last_name" placeholder="姓（例：山田）" required autocomplete="family-name">
+              <span class="name-input-label">姓</span>
+            </div>
+            <div class="name-input-wrap">
+              <input type="text" id="first_name" name="first_name" placeholder="名（例：太郎）" required autocomplete="given-name">
+              <span class="name-input-label">名</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 法人名・部署名 -->
+        <div class="form-group">
+          <label for="company_name">法人名（会社名） <span class="required">必須</span></label>
+          <input type="text" id="company_name" name="company_name" placeholder="例：株式会社グローバル商事" required autocomplete="organization">
+        </div>
+
+        <div class="form-group">
+          <label for="department_name">部署名 <span class="required">必須</span></label>
+          <input type="text" id="department_name" name="department_name" placeholder="例：海外営業部" required autocomplete="organization-title">
+        </div>
+
+        <!-- メールアドレス -->
+        <div class="form-group">
+          <label for="email_input">メールアドレス <span class="required">必須</span></label>
+          <input type="email" id="email_input" name="email_input" placeholder="例：yamada@example.com" required autocomplete="email">
+          <p class="form-hint">予約確定メール・面談前アンケートのリンクをお送りします。</p>
+        </div>
+
+        <hr class="form-divider">
 
         <div class="form-group">
           <label>Q1. 現在のあなたの主な役割に最も近いものを1つ選んでください。 <span class="required">必須</span></label>
