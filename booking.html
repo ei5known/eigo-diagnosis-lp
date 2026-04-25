@@ -41,7 +41,62 @@
           //  - 入力項目を最小化し、予約完了までのステップ数と心理的負荷を減らすため
         -->
 
-        <!-- 1. ユーザー入力項目（最小限） -->
+
+        <!-- 事前カルテ Q1〜Q5（2026-04-25 v3.1.0 復元） -->
+        <div class="form-group">
+          <label for="q1_concern">Q1. 今一番気がかりなこと <span class="required">必須</span></label>
+          <p class="form-hint">赴任が決まってから、今ご自身の中で一番「気がかりなこと」や「モヤモヤしていること」は何でしょうか？（些細なことでも構いません）</p>
+          <textarea id="q1_concern" name="q1_concern" rows="3" required placeholder="例：英語で会議を仕切れるか不安、現地スタッフとうまくやれるか心配…"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="q2_english_level">Q2. 現在の英語力 <span class="required">必須</span></label>
+          <p class="form-hint">現在の英語力はどのくらいでしょうか？</p>
+          <select id="q2_english_level" name="q2_english_level" required>
+            <option value="">選択してください</option>
+            <option value="初心者（ほぼゼロ）">初心者（ほぼゼロ）</option>
+            <option value="初級（簡単な挨拶程度）">初級（簡単な挨拶程度）</option>
+            <option value="中級（読み書きはできるが話せない）">中級（読み書きはできるが話せない）</option>
+            <option value="上級（日常会話は問題ない）">上級（日常会話は問題ない）</option>
+            <option value="TOEIC 500点台以下">TOEIC 500点台以下</option>
+            <option value="TOEIC 600〜700点台">TOEIC 600〜700点台</option>
+            <option value="TOEIC 800点以上">TOEIC 800点以上</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Q3. 家族の帯同予定 <span class="required">必須</span></label>
+          <p class="form-hint">ご家族は帯同される予定ですか？</p>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="q3_family" value="単身赴任" required> 単身赴任</label>
+            <label class="radio-label"><input type="radio" name="q3_family" value="家族も同行"> 家族も同行</label>
+            <label class="radio-label"><input type="radio" name="q3_family" value="まだ未定"> まだ未定</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Q4. 週の学習時間 <span class="required">必須</span></label>
+          <p class="form-hint">今後の準備にあたり、週にどのくらい学習の時間を作れそうですか？</p>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="q4_hours" value="週1〜2時間" required> 週1〜2時間</label>
+            <label class="radio-label"><input type="radio" name="q4_hours" value="週3〜5時間"> 週3〜5時間</label>
+            <label class="radio-label"><input type="radio" name="q4_hours" value="週6時間以上"> 週6時間以上</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Q5. 会社からの費用補助 <span class="required">必須</span></label>
+          <p class="form-hint">赴任準備に関して、会社から費用補助は出ますか？</p>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="q5_budget" value="全額出る" required> 全額出る</label>
+            <label class="radio-label"><input type="radio" name="q5_budget" value="一部出る"> 一部出る</label>
+            <label class="radio-label"><input type="radio" name="q5_budget" value="完全に自費"> 完全に自費</label>
+            <label class="radio-label"><input type="radio" name="q5_budget" value="確認中"> 確認中</label>
+          </div>
+        </div>
+
+        <hr class="form-divider">
+        <!-- 1. ユーザー入力項目（希望日時） -->
         <div class="form-group">
           <label for="firstChoiceDatetime">第1希望日時</label>
           <input id="firstChoiceDatetime"
