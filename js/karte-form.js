@@ -1,7 +1,15 @@
 /**
- * karte-form.js  v2.0
+ * karte-form.js  v3.0
  * 事前カルテフォーム送信処理 + Googleカレンダー STEP 切り替え
  * 使用ページ: booking.html
+ *
+ * CHANGE LOG
+ * v2.0  2026-04-24  初版リリース（カルテ送信 + カレンダー遷移）
+ * v3.0  2026-04-25  GAS v4.0.0 対応
+ *   - form_type: 'karte' を追加（GAS側で予約確定メール+step2リンクを送信するため）
+ *   - name フィールドを追加（last_name + first_name を結合）
+ *   - firstChoiceDatetime / secondChoiceDatetime フィールドを追加
+ *   - sessionType: 'google_meet' を明示（固定値）
  */
 (function () {
   'use strict';
@@ -61,8 +69,11 @@
     submitBtn.textContent = '送信中...';
     showStatus('送信しています。しばらくお待ちください。', 'info');
 
+    // v3.0: form_type='karte' を追加 → GASがhandleKarte_を呼び予約確定メール+step2リンクを送信
     const karteData = {
+      form_type:        'karte',          // ← v3.0 追加: GAS振り分けキー
       karte_type:       'pre_consultation',
+      name:             lastName + ' ' + firstName,  // ← v3.0 追加: フルネーム
       last_name:        lastName,
       first_name:       firstName,
       email:            email,
@@ -71,6 +82,9 @@
       q3_family:        String(fd.get('q3_family')        || '').trim(),
       q4_hours:         String(fd.get('q4_hours')         || '').trim(),
       q5_budget:        String(fd.get('q5_budget')        || '').trim(),
+      sessionType:          'google_meet',  // ← v3.0 追加: Google Meet固定
+      firstChoiceDatetime:  String(fd.get('first_choice_datetime')  || '').trim(), // ← v3.0 追加
+      secondChoiceDatetime: String(fd.get('second_choice_datetime') || '').trim(), // ← v3.0 追加
       submitted_at:     new Date().toISOString(),
       lp_page:          window.location.href,
     };
@@ -87,6 +101,7 @@
         });
         const json = JSON.parse(await res.text());
         if (!json.ok) console.warn('karte save warning:', json.message);
+        else console.log('karte saved ok — booking confirm email sent');
       } catch (err) {
         console.warn('karte save failed (non-blocking):', err);
       }
