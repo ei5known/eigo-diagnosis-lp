@@ -240,6 +240,17 @@
         if (preservedEmailField) {
           preservedEmailField.value = resolvedEmail;
         }
+
+        // クエリパラメータがある場合は localStorage に保存しておく
+        if (presetName && presetEmail) {
+          try {
+            window.localStorage.setItem('eigo_diagnosis_name', resolvedName);
+            window.localStorage.setItem('eigo_diagnosis_email', resolvedEmail);
+          } catch (storageError) {
+            console.warn('localStorage is unavailable:', storageError);
+          }
+        }
+
         if (noteEl) {
           noteEl.style.display = 'block';
         }
