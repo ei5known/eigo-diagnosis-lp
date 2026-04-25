@@ -1,15 +1,19 @@
 /**
- * karte-form.js  v3.0
+ * karte-form.js  v4.0
  * 事前カルテフォーム送信処理 + Googleカレンダー STEP 切り替え
  * 使用ページ: booking.html
  *
  * CHANGE LOG
  * v2.0  2026-04-24  初版リリース（カルテ送信 + カレンダー遷移）
  * v3.0  2026-04-25  GAS v4.0.0 対応
- *   - form_type: 'karte' を追加（GAS側で予約確定メール+step2リンクを送信するため）
- *   - name フィールドを追加（last_name + first_name を結合）
- *   - firstChoiceDatetime / secondChoiceDatetime フィールドを追加
- *   - sessionType: 'google_meet' を明示（固定値）
+ *   - form_type: 'karte' を追加
+ *   - name / firstChoiceDatetime / secondChoiceDatetime フィールドを追加
+ *   - sessionType: 'google_meet' を明示
+ * v4.0  2026-04-25  氏名・法人名・部署名・メール入力フィールド対応
+ *   - 変更理由: booking.htmlに氏名/法人名/部署名/メールフィールドを新規追加
+ *   - email フィールドを email_input（新フィールドID）から取得に変更
+ *   - company_name / department_name フィールドを送信データに追加
+ *   - バリデーションに法人名・部署名・メールのチェックを追加
  */
 (function () {
   'use strict';
@@ -39,12 +43,10 @@
   }
 
   function transitionToCalendar() {
-    // ステップインジケーター更新
     if (dot1) { dot1.classList.remove('active'); dot1.classList.add('done'); dot1.textContent = '✓'; }
     if (dot2) { dot2.classList.add('active'); }
 
-    // STEP1非表示 → STEP2表示
-    if (stepKarte)  stepKarte.style.display  = 'none';
+    if (stepKarte) stepKarte.style.display = 'none';
     if (stepCal) {
       stepCal.style.display = 'block';
       setTimeout(function () {
@@ -57,39 +59,46 @@
     e.preventDefault();
 
     const fd = new FormData(form);
-    const lastName  = String(fd.get('last_name')  || '').trim();
-    const firstName = String(fd.get('first_name') || '').trim();
-    const email     = String(fd.get('email')      || '').trim();
 
-    if (!lastName)            { showStatus('姓を入力してください。', 'error'); return; }
-    if (!firstName)           { showStatus('名を入力してください。', 'error'); return; }
-    if (!isValidEmail(email)) { showStatus('メールアドレスの形式が正しくありません。', 'error'); return; }
+    // v4.0: 氏名・法人名・部署名・メールを取得
+    const lastName      = String(fd.get('last_name')       || '').trim();
+    const firstName     = String(fd.get('first_name')      || '').trim();
+    const companyName   = String(fd.get('company_name')    || '').trim();
+    const departmentName = String(fd.get('department_name') || '').trim();
+    const email         = String(fd.get('email_input')     || '').trim(); // v4.0: email_input に変更
+
+    // バリデーション
+    if (!lastName)             { showStatus('姓を入力してください。',           'error'); return; }
+    if (!firstName)            { showStatus('名を入力してください。',           'error'); return; }
+    if (!companyName)          { showStatus('法人名（会社名）を入力してください。', 'error'); return; }
+    if (!departmentName)       { showStatus('部署名を入力してください。',         'error'); return; }
+    if (!isValidEmail(email))  { showStatus('メールアドレスの形式が正しくありません。', 'error'); return; }
 
     submitBtn.disabled    = true;
     submitBtn.textContent = '送信中...';
     showStatus('送信しています。しばらくお待ちください。', 'info');
 
-    // v3.0: form_type='karte' を追加 → GASがhandleKarte_を呼び予約確定メール+step2リンクを送信
     const karteData = {
-      form_type:        'karte',          // ← v3.0 追加: GAS振り分けキー
-      karte_type:       'pre_consultation',
-      name:             lastName + ' ' + firstName,  // ← v3.0 追加: フルネーム
-      last_name:        lastName,
-      first_name:       firstName,
-      email:            email,
-      q1_concern:       String(fd.get('q1_concern')       || '').trim(),
-      q2_english_level: String(fd.get('q2_english_level') || '').trim(),
-      q3_family:        String(fd.get('q3_family')        || '').trim(),
-      q4_hours:         String(fd.get('q4_hours')         || '').trim(),
-      q5_budget:        String(fd.get('q5_budget')        || '').trim(),
-      sessionType:          'google_meet',  // ← v3.0 追加: Google Meet固定
-      firstChoiceDatetime:  String(fd.get('first_choice_datetime')  || '').trim(), // ← v3.0 追加
-      secondChoiceDatetime: String(fd.get('second_choice_datetime') || '').trim(), // ← v3.0 追加
-      submitted_at:     new Date().toISOString(),
-      lp_page:          window.location.href,
+      form_type:           'karte',
+      karte_type:          'pre_consultation',
+      name:                lastName + ' ' + firstName,   // フルネーム（GASメール用）
+      last_name:           lastName,
+      first_name:          firstName,
+      company_name:        companyName,                  // v4.0 追加: 法人名
+      department_name:     departmentName,               // v4.0 追加: 部署名
+      email:               email,
+      q1_role:             String(fd.get('q1_role')     || '').trim(),
+      q2_team:             String(fd.get('q2_team')     || '').trim(),
+      q3_experience:       String(fd.get('q3_experience') || '').trim(),
+      q4_hours:            String(fd.get('q4_hours')    || '').trim(),
+      q5_budget:           String(fd.get('q5_budget')   || '').trim(),
+      sessionType:             'google_meet',
+      firstChoiceDatetime:     String(fd.get('firstChoiceDatetime')  || '').trim(),
+      secondChoiceDatetime:    String(fd.get('secondChoiceDatetime') || '').trim(),
+      submitted_at:        new Date().toISOString(),
+      lp_page:             window.location.href,
     };
 
-    // GAS にカルテデータを保存（失敗してもカレンダーへ進む）
     if (config.karteGasEndpoint) {
       try {
         const body = 'payload=' + encodeURIComponent(JSON.stringify(karteData));
