@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Update GitHub",
+			"type": "shell",
+			"command": "git add . ; git commit -m 'Fix booking form to avoid re-asking name/email when coming from diagnosis page' ; git push origin main",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": ""
+		}
+	]
+}

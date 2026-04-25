@@ -381,6 +381,15 @@
             form_sync_enabled: formSyncEnabled
           });
 
+          // LP入力情報を保存して予約ページに引き継ぐ
+          state.lead = { name, email };
+          try {
+            window.localStorage.setItem('eigo_diagnosis_name', name);
+            window.localStorage.setItem('eigo_diagnosis_email', email);
+          } catch (storageError) {
+            console.warn('localStorage is unavailable:', storageError);
+          }
+
           // [v1.1.0 変更] バックエンドからエラーが返された場合のモーダル表示
           if (!result || !result.ok) {
             // v2.x.x: サーバーの生メッセージをユーザーに見せず常に日本語メッセージを使用
@@ -575,7 +584,7 @@
         </div>
 
         <div class="result-booking-cta">
-          <a href="booking.html" class="btn btn-primary result-booking-btn">
+          <a href="booking.html?name=${encodeURIComponent(state.lead?.name || '')}&email=${encodeURIComponent(state.lead?.email || '')}" class="btn btn-primary result-booking-btn">
             無料個別相談を予約する（完全無料・Google Meet）
           </a>
           <p class="result-booking-note">所要時間45分 ／ 事前カルテ5問（約2分）</p>

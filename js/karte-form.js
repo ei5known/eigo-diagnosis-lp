@@ -35,8 +35,17 @@ document.addEventListener('DOMContentLoaded', function() {
       data[key] = value;
     }
 
-    // 名前を結合
-    data.name = ((data.last_name || '') + ' ' + (data.first_name || '')).trim();
+    // 予約ページに渡された名前・メールがある場合はこちらを優先
+    if (data.preserved_name && data.preserved_name.trim() !== '') {
+      data.name = data.preserved_name.trim();
+    } else if (!data.name || data.name.trim() === '') {
+      data.name = ((data.last_name || '') + ' ' + (data.first_name || '')).trim();
+    }
+    if (data.preserved_email && data.preserved_email.trim() !== '') {
+      data.email = data.preserved_email.trim();
+    }
+    delete data.preserved_name;
+    delete data.preserved_email;
 
     // 日時フィールドを統一
     data.datetime1 = data.datetime1 || '';
