@@ -306,9 +306,15 @@
         </p>
 
         <form id="diagnosis-lead-form" class="diagnosis-lead-form">
-          <div class="form-group">
-            <label for="lead-name">お名前 <span class="required">*</span></label>
-            <input type="text" id="lead-name" name="name" required />
+          <div class="form-row">
+            <div class="form-group">
+              <label for="lead-last-name">姓 <span class="required">*</span></label>
+              <input type="text" id="lead-last-name" name="last_name" required />
+            </div>
+            <div class="form-group">
+              <label for="lead-first-name">名 <span class="required">*</span></label>
+              <input type="text" id="lead-first-name" name="first_name" required />
+            </div>
           </div>
 
           <div class="form-group">
@@ -354,11 +360,12 @@
         event.preventDefault();
 
         const formData = new FormData(form);
-        const name = String(formData.get('name') || '').trim();
+        const last_name = String(formData.get('last_name') || '').trim();
+        const first_name = String(formData.get('first_name') || '').trim();
         const email = String(formData.get('email') || '').trim();
         const formSyncEnabled = formData.get('formsyncenabled') === 'on';
 
-        if (!name) {
+        if (!last_name || !first_name) {
           showStatus('お名前を入力してください。', 'error');
           return;
         }
@@ -376,15 +383,16 @@
 
         try {
           const result = await submitDiagnosis({
-            name,
+            name: last_name + ' ' + first_name,
             email,
             form_sync_enabled: formSyncEnabled
           });
 
           // LP入力情報を保存して予約ページに引き継ぐ
-          state.lead = { name, email };
+          state.lead = { last_name, first_name, email };
           try {
-            window.localStorage.setItem('eigo_diagnosis_name', name);
+            window.localStorage.setItem('eigo_diagnosis_last_name', last_name);
+            window.localStorage.setItem('eigo_diagnosis_first_name', first_name);
             window.localStorage.setItem('eigo_diagnosis_email', email);
           } catch (storageError) {
             console.warn('localStorage is unavailable:', storageError);
@@ -548,7 +556,8 @@
     }
 
     console.log('renderResult called with state.lead:', state.lead);
-    console.log('Will generate booking link with name:', encodeURIComponent(state.lead?.name || ''));
+    console.log('Will generate booking link with last_name:', encodeURIComponent(state.lead?.last_name || ''));
+    console.log('Will generate booking link with first_name:', encodeURIComponent(state.lead?.first_name || ''));
     console.log('Will generate booking link with email:', encodeURIComponent(state.lead?.email || ''));
 
     const rankColor   = { A: '#f87171', B: '#fbbf24', C: '#4ade80' };
@@ -588,7 +597,7 @@
         </div>
 
         <div class="result-booking-cta">
-          <a href="booking.html?name=${encodeURIComponent(state.lead?.name || '')}&email=${encodeURIComponent(state.lead?.email || '')}" class="btn btn-primary result-booking-btn">
+          <a href="booking.html?last_name=${encodeURIComponent(state.lead?.last_name || '')}&first_name=${encodeURIComponent(state.lead?.first_name || '')}&email=${encodeURIComponent(state.lead?.email || '')}" class="btn btn-primary result-booking-btn">
             無料個別相談を予約する（完全無料・Google Meet）
           </a>
           <p class="result-booking-note">所要時間45分 ／ 事前カルテ5問（約2分）</p>

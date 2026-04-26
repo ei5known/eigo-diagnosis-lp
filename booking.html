@@ -33,10 +33,11 @@
       </div>
 
       <form id="karte-form" class="booking-form animate-in">
-        <input type="hidden" id="booking-preserved-name" name="preserved_name">
+        <input type="hidden" id="booking-preserved-last-name" name="preserved_last_name">
+        <input type="hidden" id="booking-preserved-first-name" name="preserved_first_name">
         <input type="hidden" id="booking-preserved-email" name="preserved_email">
         <p id="booking-info-note" class="form-note" style="display: none; margin-bottom: 1rem;">
-          診断ページで入力されたお名前とメールアドレスをそのまま使用します。
+          診断ページで入力されたお名前とメールアドレスを事前入力しました。変更が必要な場合は編集してください。
         </p>
         <!-- 基本情報 -->
         <div class="form-section" id="booking-basic-info-section">
@@ -222,45 +223,64 @@
 
     document.addEventListener('DOMContentLoaded', function() {
       const urlParams = new URLSearchParams(window.location.search);
-      const presetName = urlParams.get('name')?.trim() || '';
+      const presetLastName = urlParams.get('last_name')?.trim() || '';
+      const presetFirstName = urlParams.get('first_name')?.trim() || '';
       const presetEmail = urlParams.get('email')?.trim() || '';
-      const storageName = window.localStorage?.getItem('eigo_diagnosis_name')?.trim() || '';
+      const storageLastName = window.localStorage?.getItem('eigo_diagnosis_last_name')?.trim() || '';
+      const storageFirstName = window.localStorage?.getItem('eigo_diagnosis_first_name')?.trim() || '';
       const storageEmail = window.localStorage?.getItem('eigo_diagnosis_email')?.trim() || '';
-      const resolvedName = presetName || storageName;
+      const resolvedLastName = presetLastName || storageLastName;
+      const resolvedFirstName = presetFirstName || storageFirstName;
       const resolvedEmail = presetEmail || storageEmail;
       
       // デバッグログ
       console.log('booking.html DOMContentLoaded:', {
         urlQuery: window.location.search,
-        presetName,
+        presetLastName,
+        presetFirstName,
         presetEmail,
-        storageName,
+        storageLastName,
+        storageFirstName,
         storageEmail,
-        resolvedName,
+        resolvedLastName,
+        resolvedFirstName,
         resolvedEmail
       });
 
       const noteEl = document.getElementById('booking-info-note');
-      const infoSection = document.getElementById('booking-basic-info-section');
-      const preservedNameField = document.getElementById('booking-preserved-name');
+      const preservedLastNameField = document.getElementById('booking-preserved-last-name');
+      const preservedFirstNameField = document.getElementById('booking-preserved-first-name');
       const preservedEmailField = document.getElementById('booking-preserved-email');
 
-      if (resolvedName && resolvedEmail) {
-        console.log('Form will be prefilled with:', { resolvedName, resolvedEmail });
+      if (resolvedLastName && resolvedFirstName && resolvedEmail) {
+        console.log('Form will be prefilled with:', { resolvedLastName, resolvedFirstName, resolvedEmail });
         
-        if (preservedNameField) {
-          preservedNameField.value = resolvedName;
-        }
-        if (preservedEmailField) {
-          preservedEmailField.value = resolvedEmail;
-        }
+        // 基本情報フィールドに値をセット
+        const lastNameField = document.getElementById('last_name');
+        const firstNameField = document.getElementById('first_name');
+        const emailField = document.getElementById('email');
+        
+        if (lastNameField) lastNameField.value = resolvedLastName;
+        if (firstNameField) firstNameField.value = resolvedFirstName;
+        if (emailField) emailField.value = resolvedEmail;
+        
+        // readonlyにする
+        if (lastNameField) lastNameField.readOnly = true;
+        if (firstNameField) firstNameField.readOnly = true;
+        if (emailField) emailField.readOnly = true;
+        
+        // hiddenフィールドにセット
+        if (preservedLastNameField) preservedLastNameField.value = resolvedLastName;
+        if (preservedFirstNameField) preservedFirstNameField.value = resolvedFirstName;
+        if (preservedEmailField) preservedEmailField.value = resolvedEmail;
 
         // クエリパラメータがある場合は localStorage に保存しておく
-        if (presetName && presetEmail) {
+        if (presetLastName && presetFirstName && presetEmail) {
           try {
-            window.localStorage.setItem('eigo_diagnosis_name', resolvedName);
+            window.localStorage.setItem('eigo_diagnosis_last_name', resolvedLastName);
+            window.localStorage.setItem('eigo_diagnosis_first_name', resolvedFirstName);
             window.localStorage.setItem('eigo_diagnosis_email', resolvedEmail);
-            console.log('Saved to localStorage:', { resolvedName, resolvedEmail });
+            console.log('Saved to localStorage:', { resolvedLastName, resolvedFirstName, resolvedEmail });
           } catch (storageError) {
             console.warn('localStorage is unavailable:', storageError);
           }
@@ -268,13 +288,6 @@
 
         if (noteEl) {
           noteEl.style.display = 'block';
-        }
-        if (infoSection) {
-          infoSection.style.display = 'none';
-          const controls = infoSection.querySelectorAll('input, select, textarea');
-          controls.forEach(function(control) {
-            control.disabled = true;
-          });
         }
       } else {
         console.log('No name/email found. Form will request input.');
