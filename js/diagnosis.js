@@ -521,12 +521,12 @@
       recaptchaAction: config.recaptchaAction || 'submit_diagnosis'
     };
 
-    const body = 'payload=' + encodeURIComponent(JSON.stringify(payload));
+    const body = JSON.stringify(payload); //[UPDATE: 2026-04-27] Changed to send raw JSON for text/plain content type
 
     const response = await fetch(config.gasEndpoint, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        'Content-Type': 'text/plain;charset=utf-8' //[UPDATE: 2026-04-27] Changed to text/plain to avoid CORS preflight request
       },
       body: body,
       redirect: 'follow'
