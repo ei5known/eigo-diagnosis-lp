@@ -526,7 +526,7 @@
     const response = await fetch(config.gasEndpoint, {
       method: 'POST',
       headers: {
-        'Content-Type': 'text/plain;charset=utf-8' //[UPDATE: 2026-04-27] Changed to text/plain to avoid CORS preflight request
+        'Content-Type': 'application/json;charset=utf-8' //[UPDATE: 2026-04-27] Changed to text/plain to avoid CORS preflight request
       },
       body: body,
       redirect: 'follow'
