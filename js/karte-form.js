@@ -66,8 +66,9 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
       const response = await fetch(config.gasEndpoint, {
         method: 'POST',
+        redirect: 'follow', // [UPDATE: 2026-04-27] - CORSプリフライト回避のためリダイレクトを許可
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'text/plain;charset=utf-8', // [UPDATE: 2026-04-27] - CORSプリフライト回避のためContent-Typeをtext/plainに変更
         },
         body: JSON.stringify(data)
       });
