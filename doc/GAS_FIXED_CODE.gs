@@ -95,6 +95,10 @@ function sendDiagnosisEmail(payload) {
   const recipient = payload.email;
   const name = payload.name;
   const rank = payload.result_rank || 'C';
+  // [UPDATE: 2026-04-27]
+  // - 内容: 診断サンクスメール内の予約フォームURLにLP入力値をパラメータとして付与。
+  // - 理由: ユーザー体験向上のため、診断フォームで入力された氏名とメールアドレスを予約フォームに自動引き継ぎ。
+  // - 備考: `payload.name` は LP 側で `last_name + ' ' + first_name` 形式で生成されている前提。
   const bookingUrl = 'https://ei5known.github.io/eigo-diagnosis-lp/booking.html?last_name=' + 
     encodeURIComponent((payload.name || '').split(' ')[0]) + '&first_name=' + 
     encodeURIComponent((payload.name || '').split(' ').slice(1).join(' ')) + '&email=' + 

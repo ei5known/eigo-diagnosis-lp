@@ -3,6 +3,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.getElementById('karte-form');
+  console.log('Form element:', form); //[DEBUG: 2026-04-27] - フォーム要素の取得確認
   const calendarEmbed = document.getElementById('calendar-embed');
   const config = window.KARTE_CONFIG;
 
@@ -13,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
+    // [UPDATE: 2026-04-27] - フォームのデフォルト送信挙動が停止していることを確認するためのログ
+    console.log('Form submission prevented.');
 
     // reCAPTCHAトークン取得
     const recaptchaToken = await getRecaptchaToken();
@@ -73,14 +76,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
       if (result.success) {
         // 成功: カレンダー埋め込みを表示
-        form.style.display = 'none';
-        calendarEmbed.style.display = 'block';
+        // [UPDATE: 2026-04-27] - 予約フォーム送信成功後、Googleカレンダー予約画面へリダイレクト
+        // 以前はiframe表示を試みていたが、ユーザー報告の不具合修正のため、確実なリダイレクトに変更。
+        const googleCalendarBookingUrl = 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ14Wx5g1oVmiT3gXJPafI2ywCmChpiQDFMHtX3mRcYAiY_3K8fNhBq9PJlzGV3pI15CmjrA-ZbL?gv=true';
+        window.location.href = googleCalendarBookingUrl;
 
-        // ページ上部にスクロール
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // リダイレクトされるため、以下のコードは不要になるが、念のためコメントアウト
+        // form.style.display = 'none';
+        // calendarEmbed.style.display = 'block';
 
-        // 成功メッセージ（オプション）
-        alert('カルテが送信されました。以下のカレンダーから予約日時を選択してください。');
+        // window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // alert('カルテが送信されました。以下のカレンダーから予約日時を選択してください。');
       } else {
         throw new Error(result.message || '送信に失敗しました');
       }

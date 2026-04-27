@@ -214,12 +214,11 @@
   </div>
 
   <script>
-    <!--
-[UPDATE: 2026-04-27]
-- 内容: GASエンドポイントURLを更新。
-- 理由: フェーズAの修復の一環として、要件定義書v4.1.2に記載されている最新のエンドポイントURLに統一するため。
-- 備考: index.htmlおよびstep2.htmlも同様に更新済み。
--->
+    /* [UPDATE: 2026-04-27]
+     * 内容: LP診断で入力された氏名とメールアドレスをURLパラメータまたはLocalStorageから取得し、予約フォームに自動入力。
+     * 理由: ユーザー体験向上のため、情報の再入力を不要にし、フィールドをreadonlyに設定。
+     * 備考: `last_name`, `first_name`, `email` パラメータを優先し、存在しない場合は `localStorage` を参照。
+     */
     window.KARTE_CONFIG = {
       gasEndpoint: 'https://script.google.com/macros/s/AKfycbwdXodudJ22Ememqt9WgumRfo9WFPJdd5-WkAxko7IdPfI-c5zDpa9Epmqxk8ZIbyhD/exec',
       formType: 'karte',
