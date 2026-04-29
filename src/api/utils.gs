@@ -159,6 +159,128 @@ function has24HoursPassed(paymentDate) {
  * @param {string} lastAccessDateColumnName The name of the column containing the last access or course completion date.
  * @returns {Array<any>} The record with PII columns masked if the retention period has passed.
  */
+// New constants for PII masking
+const PII_DATA_SHEET_ID = 'YOUR_PII_DATA_SHEET_ID_HERE'; // e.g., '1Cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+const PII_DATA_SHEET_NAME = 'User Data'; // e.g., 'Registrations'
+const PII_RETENTION_DAYS = 365; // Example: Mask PII after 365 days
+const PII_LAST_ACCESS_DATE_COLUMN_NAME = 'last_access_date'; // Or 'course_completion_date'
+
+/**
+ * Trigger function to automate PII masking in a Google Sheet.
+ * This function is intended to be set as a time-driven trigger.
+ * It iterates through the specified sheet, applies maskPiiData to relevant rows.
+ */
+function triggerMaskPiiData() {
+  Logger.log('Starting PII masking trigger...');
+  try {
+    const spreadsheet = SpreadsheetApp.openById(PII_DATA_SHEET_ID);
+    const sheet = spreadsheet.getSheetByName(PII_DATA_SHEET_NAME);
+    if (!sheet) {
+      logError('triggerMaskPiiData', new Error('PII data sheet not found: ' + PII_DATA_SHEET_NAME));
+      return;
+    }
+
+    const range = sheet.getDataRange();
+    const values = range.getValues();
+    const headers = values[0];
+    const dataRows = values.slice(1);
+    let updatedRows = 0;
+
+    for (let i = 0; i < dataRows.length; i++) {
+      const originalRecord = dataRows[i];
+      const maskedRecord = maskPiiData(originalRecord, headers, PII_RETENTION_DAYS, PII_LAST_ACCESS_DATE_COLUMN_NAME);
+      // Check if any changes were made before writing back to avoid unnecessary sheet writes
+      if (JSON.stringify(originalRecord) !== JSON.stringify(maskedRecord)) {
+        sheet.getRange(i + 2, 1, 1, maskedRecord.length).setValues([maskedRecord]);
+        updatedRows++;
+      }
+    }
+    Logger.log('Finished PII masking trigger. Updated ' + updatedRows + ' rows.');
+
+  } catch (e) {
+    logError('triggerMaskPiiData', e, 'Error during PII masking trigger execution.');
+  }
+}
+
+// Ensure PAYPAL_TRANSACTIONS_SHEET_ID and PAYPAL_TRANSACTIONS_SHEET_NAME are accessible (e.g., from paypal.gs)
+// For standalone utility, you might redefine them or pass them.
+// For simplicity in a single GAS project, they are often globally accessible if defined in another .gs file.
+
+/**
+ * Trigger function to check PayPal payments 24 hours after their payment_date.
+ * This function is intended to be set as a time-driven trigger.
+ * It iterates through PayPal transactions, checks for payments that are not yet
+ * '決済済み' and where 24 hours have passed since payment_date, then performs
+ * a follow-up action (e.g., re-verifies payment or sends a reminder).
+ */
+function trigger24HourPaymentCheck() {
+  Logger.log('Starting 24-hour PayPal payment check trigger...');
+  try {
+    const spreadsheet = SpreadsheetApp.openById(PAYPAL_TRANSACTIONS_SHEET_ID); // Assuming defined in paypal.gs
+    const sheet = spreadsheet.getSheetByName(PAYPAL_TRANSACTIONS_SHEET_NAME); // Assuming defined in paypal.gs
+    if (!sheet) {
+      logError('trigger24HourPaymentCheck', new Error('PayPal transactions sheet not found: ' + PAYPAL_TRANSACTIONS_SHEET_NAME));
+      return;
+    }
+
+    const range = sheet.getDataRange();
+    const values = range.getValues();
+    const headers = values[0];
+
+    const paymentStatusColumnIndex = headers.indexOf('payment_status');
+    const paymentDateColumnIndex = headers.indexOf('payment_date');
+    const customIdColumnIndex = headers.indexOf('custom_id'); // Needed for verifyPayPalPaymentStatus
+
+    if (paymentStatusColumnIndex === -1 || paymentDateColumnIndex === -1 || customIdColumnIndex === -1) {
+      logError('trigger24HourPaymentCheck', new Error('Required columns (payment_status, payment_date, or custom_id) not found in sheet headers.'));
+      return;
+    }
+
+    let checkedPayments = 0;
+    for (let i = 1; i < values.length; i++) { // Start from second row to skip headers
+      const row = values[i];
+      const paymentStatus = row[paymentStatusColumnIndex];
+      const paymentDate = new Date(row[paymentDateColumnIndex]);
+      const customId = row[customIdColumnIndex];
+
+      if (paymentStatus !== '決済済み' && has24HoursPassed(paymentDate)) {
+        Logger.log('24 hours passed for pending payment (custom_id: ' + customId + '). Initiating follow-up.');
+        checkedPayments++;
+
+        // --- FOLLOW-UP ACTION (Customize this part) ---
+        // Example 1: Re-verify payment status with PayPal
+        const currentPayPalStatus = verifyPayPalPaymentStatus(customId);
+        if (currentPayPalStatus === 'COMPLETED') {
+          // Update sheet to '決済済み' if PayPal confirms completion
+          sheet.getRange(i + 1, paymentStatusColumnIndex + 1).setValue('決済済み');
+          Logger.log('Payment for custom_id: ' + customId + ' confirmed as COMPLETED by PayPal API and updated in sheet.');
+        } else if (currentPayPalStatus !== null) {
+          Logger.log('PayPal API status for custom_id: ' + customId + ' is: ' + currentPayPalStatus + '. No update required yet.');
+        } else {
+          Logger.log('Could not verify PayPal status for custom_id: ' + customId + '. Manual check recommended.');
+        }
+
+        // Example 2: Send a reminder email (requires a sendEmail function)
+        // sendReminderEmail(customId, row[emailColumnIndex]);
+        // ------------------------------------------------
+      }
+    }
+    Logger.log('Finished 24-hour PayPal payment check. Checked ' + checkedPayments + ' potentially pending payments.');
+
+  } catch (e) {
+    logError('trigger24HourPaymentCheck', e, 'Error during 24-hour payment check trigger execution.');
+  }
+}
+
+/**
+ * Masks Personal Identifiable Information (PII) in a record after a specified retention period.
+ * Intended to be run by a Time-driven trigger.
+ * @param {Array<any>} record The spreadsheet row data representing a record.
+ * @param {Array<string>} headers The spreadsheet headers to identify PII columns (e.g., \"name\", \"email\").
+ * @param {number} retentionDays The number of days after which PII should be masked.
+ * @param {string} lastAccessDateColumnName The name of the column containing the last access or course completion date.
+ * @returns {Array<any>} The record with PII columns masked if the retention period has passed.
+ */
 function maskPiiData(record, headers, retentionDays, lastAccessDateColumnName) {
   try {
     const lastAccessDateColumnIndex = headers.indexOf(lastAccessDateColumnName);
