@@ -61,7 +61,7 @@ function handlePayPalWebhook(e) {
     let updated = false;
     for (let i = 1; i < data.length; i++) { // Start from second row to skip headers
       const row = data[i];
-      if (row[customIdColumnIndex] == customId) {
+            if (row[customIdColumnIndex] === customId) {
         if (row[paymentStatusColumnIndex] !== '決済済み') {
           sheet.getRange(i + 1, paymentStatusColumnIndex + 1).setValue('決済済み');
           sheet.getRange(i + 1, paymentDateColumnIndex + 1).setValue(new Date()); // Set payment date upon successful payment
@@ -93,32 +93,32 @@ function handlePayPalWebhook(e) {
 
 // Placeholder constants for Spreadsheet ID and sheet name
 // IMPORTANT: Replace these with your actual Spreadsheet ID and sheet name.
-const PAYPAL_TRANSACTIONS_SHEET_ID = 'YOUR_SPREADSHEET_ID_HERE'; // e.g., '1Bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-const PAYPAL_TRANSACTIONS_SHEET_NAME = 'PayPal Transactions'; // e.g., 'Transactions'
+const PAYPAL_TRANSACTIONS_SHEET_ID = '1DmTpWGkrZnz798_C-7zw1T2SQNhVv5T4IrLCjyuRMMo'; // e.g., '1Bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+const PAYPAL_TRANSACTIONS_SHEET_NAME = "PayPal Transactions"; // e.g., 'Transactions'
 
-const ERROR_LOGS_SHEET_ID = 'YOUR_ERROR_LOGS_SHEET_ID_HERE'; // Placeholder for your error logs spreadsheet ID
+const ERROR_LOGS_SHEET_ID = '1DmTpWGkrZnz798_C-7zw1T2SQNhVv5T4IrLCjyuRMMo'; // Placeholder for your error logs spreadsheet ID
 const ERROR_LOGS_SHEET_NAME = 'Error Logs'; // Placeholder for your error logs sheet name
 
 /**
  * Logs an error to a dedicated Google Sheet.
  * @param {string} functionName The name of the function where the error occurred.
  * @param {Error} error The error object.
- * @param {string} [details=\'\'] Optional additional details to log.
+ * @param {string} [details] Optional additional details to log.
  */
-function logError(functionName, error, details = \'\') {
+function logError(functionName, error, details) {
+  details = details || ''; // Default to empty string if undefined or falsy
   try {
     const spreadsheet = SpreadsheetApp.openById(ERROR_LOGS_SHEET_ID);
     const sheet = spreadsheet.getSheetByName(ERROR_LOGS_SHEET_NAME);
     if (!sheet) {
-      Logger.log(\'Error: Error logs sheet not found: \' + ERROR_LOGS_SHEET_NAME);
+      Logger.log('Error: Error logs sheet not found: ' + ERROR_LOGS_SHEET_NAME);
       return;
     }
 
     const timestamp = new Date();
     sheet.appendRow([timestamp.toISOString(), functionName, error.message, error.stack, details]);
-    Logger.log(\'Error logged: \' + functionName + \' - \' + error.message);
+    Logger.log('Error logged: ' + functionName + ' - ' + error.message);
   } catch (logError) {
-    Logger.log(\'FATAL ERROR: Could not log error to sheet: \' + logError.message + \' for original error: \' + error.message);
+    Logger.log('FATAL ERROR: Could not log error to sheet: ' + logError.message + ' for original error: ' + error.message);
   }
 }
-
