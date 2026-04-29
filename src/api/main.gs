@@ -1,19 +1,23 @@
-/**
- * Main entry point for HTTP POST requests to the Google Apps Script web app.
- * Routes incoming requests to appropriate handlers based on URL parameters.
- * @param {GoogleAppsScript.Events.DoPost} e The event object from the HTTP POST request.
- * @returns {GoogleAppsScript.Content.TextOutput} A JSON response indicating the status of the operation.
- */
 function doPost(e) {
   const path = e.parameter.path;
-  Logger.log('Received doPost request for path: ' + path);
+  let output;
 
   switch (path) {
-    case 'paypal-webhook':
-      return handlePayPalWebhook(e);
-    // Add other webhook or API routes here
+    case "paypal_webhook":
+      output = handlePayPalWebhook(e);
+      break;
+    case "diagnosis":
+      output = handleDiagnosis(e);
+      break;
+    case "karte":
+      output = handleKarte(e);
+      break;
+    case "step2":
+      output = handleStep2(e);
+      break;
     default:
-      Logger.log('Unhandled path: ' + path);
-      return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Unhandled path' })).setMimeType(ContentService.MimeType.JSON);
+      output = ContentService.createTextOutput("Invalid path").setMimeType(ContentService.MimeType.TEXT);
+      break;
   }
+  return output;
 }

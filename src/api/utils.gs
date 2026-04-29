@@ -1,316 +1,159 @@
-/**
- * @fileoverview Utility functions for the English School AI system.
- */
 
-// Placeholder constants for PayPal API and error logging.
-// IMPORTANT: Replace these with your actual PayPal API credentials and Spreadsheet IDs.
-const PAYPAL_API_BASE_URL = \"https://api-m.sandbox.paypal.com\"; // Use sandbox for testing, api-m.paypal.com for live
-const PAYPAL_CLIENT_ID = \"YOUR_PAYPAL_CLIENT_ID_HERE\";
-const PAYPAL_SECRET = \"YOUR_PAYPAL_SECRET_HERE\";
-
-const ERROR_LOGS_SHEET_ID = \"YOUR_ERROR_LOGS_SHEET_ID_HERE\"; // Placeholder for your error logs spreadsheet ID
-const ERROR_LOGS_SHEET_NAME = \"Error Logs\"; // Placeholder for your error logs sheet name
+const PAYPAL_TRANSACTIONS_SHEET_ID = "YOUR_PAYPAL_TRANSACTIONS_SHEET_ID";
+const PAYPAL_TRANSACTIONS_SHEET_NAME = "PayPal Transactions";
+const ERROR_LOGS_SHEET_ID = "YOUR_ERROR_LOGS_SHEET_ID";
+const ERROR_LOGS_SHEET_NAME = "Error Logs";
 
 /**
- * Logs an error to a dedicated Google Sheet.
- * @param {string} functionName The name of the function where the error occurred.
- * @param {Error} error The error object.
- * @param {string} [details=\"\"] Optional additional details to log.
+ * error_logs シートへ、発生時刻・関数名・エラー内容・スタックトレース・詳細を自動記録する関数。
+ * @param {string} functionName - エラーが発生した関数名
+ * @param {Error} error - エラーオブジェクト
+ * @param {string} details - エラーに関する追加の詳細情報
  */
-function logError(functionName, error, details = \"\") {
+function logError(functionName, error, details) {
   try {
-    const spreadsheet = SpreadsheetApp.openById(ERROR_LOGS_SHEET_ID);
-    const sheet = spreadsheet.getSheetByName(ERROR_LOGS_SHEET_NAME);
+    const ss = SpreadsheetApp.openById(ERROR_LOGS_SHEET_ID);
+    const sheet = ss.getSheetByName(ERROR_LOGS_SHEET_NAME);
     if (!sheet) {
-      Logger.log(\"Error: Error logs sheet not found: \" + ERROR_LOGS_SHEET_NAME);
+      Logger.log(`Error log sheet "${ERROR_LOGS_SHEET_NAME}" not found in spreadsheet ID "${ERROR_LOGS_SHEET_ID}".`);
       return;
     }
-
     const timestamp = new Date();
-    sheet.appendRow([timestamp.toISOString(), functionName, error.message, error.stack, details]);
-    Logger.log(\"Error logged: \" + functionName + \" - \" + error.message);
-  } catch (logError) {
-    Logger.log(\"FATAL ERROR: Could not log error to sheet: \" + logError.message + \" for original error: \" + error.message);
+    const errorMessage = error.message || error.toString();
+    const stackTrace = error.stack || "No stack trace available";
+    sheet.appendRow([timestamp, functionName, errorMessage, stackTrace, details]);
+  } catch (e) {
+    Logger.log(`Failed to log error: ${e.message}. Original error in ${functionName}: ${error.message}`);
   }
 }
 
 /**
- * Fetches an OAuth2 access token from PayPal.
- * @returns {string} The access token.
- * @throws {Error} If failed to get access token.
+ * PayPal API を呼び出し、最新の決済ステータスを取得する関数（通信エラー時も考慮）。
+ * @param {string} transactionId - PayPalトランザクションID
+ * @returns {string|null} 決済ステータス、またはエラー発生時はnull
  */
-function getPayPalAccessToken() {
-  const url = PAYPAL_API_BASE_URL + \"/v1/oauth2/token\";
-  const headers = {
-    \"Authorization\": \"Basic \" + Utilities.base64Encode(PAYPAL_CLIENT_ID + \":\" + PAYPAL_SECRET),
-    \"Content-Type\": \"application/x-www-form-urlencoded\"
-  };
-  const options = {
-    \"method\": \"post\".toLowerCase(),
-    \"headers\": headers,
-    \"payload\": \"grant_type=client_credentials\",
-    \"muteHttpExceptions\": true // Allow checking response for errors
-  };
-
+function verifyPayPalPaymentStatus(transactionId) {
   try {
-    const response = UrlFetchApp.fetch(url, options);
+    // Placeholder for PayPal API endpoint and authentication
+    // In a real application, you would manage access tokens securely (e.g., using PropertiesService and OAuth2)
+    const paypalApiUrl = `https://api.paypal.com/v2/payments/captures/${transactionId}`;
+    const accessToken = getPayPalAccessToken(); // Assume this function exists elsewhere or is implemented here
+
+    if (!accessToken) {
+      logError("verifyPayPalPaymentStatus", new Error("PayPal Access Token Missing"), "Could not retrieve PayPal access token.");
+      return null;
+    }
+
+    const options = {
+      "method": "GET",
+      "headers": {
+        "Authorization": `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+      "muteHttpExceptions": true // To get full error response instead of throwing exception
+    };
+
+    const response = UrlFetchApp.fetch(paypalApiUrl, options);
     const responseCode = response.getResponseCode();
     const responseBody = response.getContentText();
 
-    if (responseCode === 200) {
-      const tokenData = JSON.parse(responseBody);
-      return tokenData.access_token;
+    if (responseCode >= 200 && responseCode < 300) {
+      const data = JSON.parse(responseBody);
+      // Assuming the PayPal API response has a 'status' field
+      return data.status;
     } else {
-      const error = new Error(\"Failed to get PayPal access token. Status: \" + responseCode + \", Response: \" + responseBody);
-      logError(\"getPayPalAccessToken\", error, \"PayPal API URL: \" + url);
-      throw error;
+      logError("verifyPayPalPaymentStatus", new Error("PayPal API Error"), `Status: ${responseCode}, Response: ${responseBody}, Transaction ID: ${transactionId}`);
+      return null;
     }
   } catch (e) {
-    logError(\"getPayPalAccessToken\", e, \"Error fetching PayPal access token.\");
-    throw e;
-  }
-}
-
-/**
- * Verifies the latest payment status for a given custom ID directly from PayPal.
- * This acts as a double-check mechanism against webhook inconsistencies.
- * @param {string} customId The custom ID (e.g., invoice number) associated with the PayPal transaction.
- * @returns {string|null} The payment status string (e.g., \"COMPLETED\", \"PENDING\") or null if not found/error.
- */
-function verifyPayPalPaymentStatus(customId) {
-  let accessToken;
-  try {
-    accessToken = getPayPalAccessToken();
-  } catch (e) {
-    Logger.log(\"Could not get PayPal access token for verification: \" + e.message);
-    return null; // Cannot verify without token
-  }
-
-  // PayPal API for retrieving transaction details usually requires transaction ID.
-  // To use customId, we might need to search transactions or rely on webhook data having transaction ID.
-  // For simplicity and assuming customId is unique and directly retrievable (e.g., as invoice ID),
-  // we will simulate fetching an order or payment by customId if PayPal API supports it directly.
-  // In a real-world scenario, you would likely store PayPal Transaction ID in your sheet
-  // and use that to query PayPal API for exact transaction details.
-  // For this exercise, we will assume a hypothetical endpoint or search functionality.
-
-  // NOTE: This is a simplified example. PayPal API does not directly offer a \"get by custom_id\" endpoint.
-  // A real implementation would involve: 
-  // 1. Storing PayPal Transaction ID (e.g., from webhook payload) in your spreadsheet.
-  // 2. Using that Transaction ID to call PayPal \"GET /v2/payments/captures/{id}\" or \"GET /v2/checkout/orders/{id}\".
-  // For the purpose of this task, we will simulate a direct lookup using customId.
-
-  const url = PAYPAL_API_BASE_URL + \"/v2/checkout/orders/\" + customId; // Hypothetical: Assuming customId maps to an order ID
-  const headers = {
-    \"Authorization\": \"Bearer \" + accessToken,
-    \"Content-Type\": \"application/json\"
-  };
-  const options = {
-    \"method\": \"get\".toLowerCase(),
-    \"headers\": headers,
-    \"muteHttpExceptions\": true
-  };
-
-  try {
-    const response = UrlFetchApp.fetch(url, options);
-    const responseCode = response.getResponseCode();
-    const responseBody = response.getContentText();
-
-    if (responseCode === 200) {
-      const orderData = JSON.parse(responseBody);
-      // Assuming orderData.status contains the payment status
-      return orderData.status; 
-    } else if (responseCode === 404) {
-      Logger.log(\"PayPal Order not found for custom ID: \" + customId);
-      return null; // Payment not found
-    } else {
-      const error = new Error(\"Failed to verify PayPal payment status. Status: \" + responseCode + \", Response: \" + responseBody);
-      logError(\"verifyPayPalPaymentStatus\", error, \"Custom ID: \" + customId + \", PayPal API URL: \" + url);
-      return null; // Error during verification
-    }
-  } catch (e) {
-    logError(\"verifyPayPalPaymentStatus\", e, \"Error verifying PayPal payment status for custom ID: \" + customId);
+    logError("verifyPayPalPaymentStatus", e, `Transaction ID: ${transactionId}`);
     return null;
   }
 }
 
 /**
- * Checks if 24 hours have passed since the payment date for a given record.
- * This function is intended to be used by the \"追客トリガー（24時間判定）\".
- * @param {Date} paymentDate The date and time when the payment was recorded.
- * @returns {boolean} True if 24 hours or more have passed since paymentDate, false otherwise.
+ * Placeholder for getting PayPal Access Token.
+ * In a real Google Apps Script project, this would involve a secure OAuth2 flow.
+ * @returns {string} PayPal Access Token (placeholder)
  */
-function has24HoursPassed(paymentDate) {
-  if (!(paymentDate instanceof Date)) {
-    logError(\"has24HoursPassed\", new Error(\"Invalid paymentDate type\"), \"Received: \" + paymentDate);
-    return false;
-  }
+function getPayPalAccessToken() {
+  // Implement secure retrieval and refresh of PayPal access token here.
+  // For example, using `PropertiesService` to store client ID/secret and making an OAuth API call.
+  Logger.log("getPayPalAccessToken: Placeholder for PayPal access token retrieval.");
+  return "YOUR_PAYPAL_ACCESS_TOKEN"; // Replace with actual token retrieval logic
+}
+
+/**
+ * 引数の日時から現在まで24時間以上経過しているか判定し、真偽値を返す関数。
+ * @param {Date|string} date - 判定する日時 (Dateオブジェクトまたは日付文字列)
+ * @returns {boolean} 24時間以上経過していればtrue、そうでなければfalse
+ */
+function has24HoursPassed(date) {
+  const twentyFourHoursInMs = 24 * 60 * 60 * 1000;
   const now = new Date();
-  const twentyFourHoursAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
-  return paymentDate <= twentyFourHoursAgo;
+  const inputDate = new Date(date);
+  return (now.getTime() - inputDate.getTime()) >= twentyFourHoursInMs;
 }
 
 /**
- * Masks Personal Identifiable Information (PII) in a record after a specified retention period.
- * Intended to be run by a Time-driven trigger.
- * @param {Array<any>} record The spreadsheet row data representing a record.
- * @param {Array<string>} headers The spreadsheet headers to identify PII columns (e.g., \"name\", \"email\").
- * @param {number} retentionDays The number of days after which PII should be masked.
- * @param {string} lastAccessDateColumnName The name of the column containing the last access or course completion date.
- * @returns {Array<any>} The record with PII columns masked if the retention period has passed.
+ * 指定した日数経過後に、顧客の氏名・メールを *** に置き換えるマスキング関数。
+ * PAYPAL_TRANSACTIONS_SHEET_IDとPAYPAL_TRANSACTIONS_SHEET_NAMEに存在するシートを操作します。
+ * @param {number} days - 指定した日数。この日数経過後のデータがマスキングされます。
  */
-// New constants for PII masking
-const PII_DATA_SHEET_ID = 'YOUR_PII_DATA_SHEET_ID_HERE'; // e.g., '1Cxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-const PII_DATA_SHEET_NAME = 'User Data'; // e.g., 'Registrations'
-const PII_RETENTION_DAYS = 365; // Example: Mask PII after 365 days
-const PII_LAST_ACCESS_DATE_COLUMN_NAME = 'last_access_date'; // Or 'course_completion_date'
-
-/**
- * Trigger function to automate PII masking in a Google Sheet.
- * This function is intended to be set as a time-driven trigger.
- * It iterates through the specified sheet, applies maskPiiData to relevant rows.
- */
-function triggerMaskPiiData() {
-  Logger.log('Starting PII masking trigger...');
+function maskPiiData(days) {
   try {
-    const spreadsheet = SpreadsheetApp.openById(PII_DATA_SHEET_ID);
-    const sheet = spreadsheet.getSheetByName(PII_DATA_SHEET_NAME);
+    const ss = SpreadsheetApp.openById(PAYPAL_TRANSACTIONS_SHEET_ID);
+    const sheet = ss.getSheetByName(PAYPAL_TRANSACTIONS_SHEET_NAME);
     if (!sheet) {
-      logError('triggerMaskPiiData', new Error('PII data sheet not found: ' + PII_DATA_SHEET_NAME));
+      logError("maskPiiData", new Error("Sheet Not Found"), `PayPal transactions sheet "${PAYPAL_TRANSACTIONS_SHEET_NAME}" not found in spreadsheet ID "${PAYPAL_TRANSACTIONS_SHEET_ID}".`);
       return;
     }
 
-    const range = sheet.getDataRange();
-    const values = range.getValues();
-    const headers = values[0];
-    const dataRows = values.slice(1);
-    let updatedRows = 0;
+    const dataRange = sheet.getDataRange();
+    const values = dataRange.getValues();
 
-    for (let i = 0; i < dataRows.length; i++) {
-      const originalRecord = dataRows[i];
-      const maskedRecord = maskPiiData(originalRecord, headers, PII_RETENTION_DAYS, PII_LAST_ACCESS_DATE_COLUMN_NAME);
-      // Check if any changes were made before writing back to avoid unnecessary sheet writes
-      if (JSON.stringify(originalRecord) !== JSON.stringify(maskedRecord)) {
-        sheet.getRange(i + 2, 1, 1, maskedRecord.length).setValues([maskedRecord]);
-        updatedRows++;
-      }
-    }
-    Logger.log('Finished PII masking trigger. Updated ' + updatedRows + ' rows.');
-
-  } catch (e) {
-    logError('triggerMaskPiiData', e, 'Error during PII masking trigger execution.');
-  }
-}
-
-// Ensure PAYPAL_TRANSACTIONS_SHEET_ID and PAYPAL_TRANSACTIONS_SHEET_NAME are accessible (e.g., from paypal.gs)
-// For standalone utility, you might redefine them or pass them.
-// For simplicity in a single GAS project, they are often globally accessible if defined in another .gs file.
-
-/**
- * Trigger function to check PayPal payments 24 hours after their payment_date.
- * This function is intended to be set as a time-driven trigger.
- * It iterates through PayPal transactions, checks for payments that are not yet
- * '決済済み' and where 24 hours have passed since payment_date, then performs
- * a follow-up action (e.g., re-verifies payment or sends a reminder).
- */
-function trigger24HourPaymentCheck() {
-  Logger.log('Starting 24-hour PayPal payment check trigger...');
-  try {
-    const spreadsheet = SpreadsheetApp.openById(PAYPAL_TRANSACTIONS_SHEET_ID); // Assuming defined in paypal.gs
-    const sheet = spreadsheet.getSheetByName(PAYPAL_TRANSACTIONS_SHEET_NAME); // Assuming defined in paypal.gs
-    if (!sheet) {
-      logError('trigger24HourPaymentCheck', new Error('PayPal transactions sheet not found: ' + PAYPAL_TRANSACTIONS_SHEET_NAME));
+    if (values.length <= 1) { // Only header or no data
+      Logger.log("No data or only header row in PayPal Transactions sheet. No PII to mask.");
       return;
     }
 
-    const range = sheet.getDataRange();
-    const values = range.getValues();
-    const headers = values[0];
-
-    const paymentStatusColumnIndex = headers.indexOf('payment_status');
-    const paymentDateColumnIndex = headers.indexOf('payment_date');
-    const customIdColumnIndex = headers.indexOf('custom_id'); // Needed for verifyPayPalPaymentStatus
-
-    if (paymentStatusColumnIndex === -1 || paymentDateColumnIndex === -1 || customIdColumnIndex === -1) {
-      logError('trigger24HourPaymentCheck', new Error('Required columns (payment_status, payment_date, or custom_id) not found in sheet headers.'));
-      return;
-    }
-
-    let checkedPayments = 0;
-    for (let i = 1; i < values.length; i++) { // Start from second row to skip headers
-      const row = values[i];
-      const paymentStatus = row[paymentStatusColumnIndex];
-      const paymentDate = new Date(row[paymentDateColumnIndex]);
-      const customId = row[customIdColumnIndex];
-
-      if (paymentStatus !== '決済済み' && has24HoursPassed(paymentDate)) {
-        Logger.log('24 hours passed for pending payment (custom_id: ' + customId + '). Initiating follow-up.');
-        checkedPayments++;
-
-        // --- FOLLOW-UP ACTION (Customize this part) ---
-        // Example 1: Re-verify payment status with PayPal
-        const currentPayPalStatus = verifyPayPalPaymentStatus(customId);
-        if (currentPayPalStatus === 'COMPLETED') {
-          // Update sheet to '決済済み' if PayPal confirms completion
-          sheet.getRange(i + 1, paymentStatusColumnIndex + 1).setValue('決済済み');
-          Logger.log('Payment for custom_id: ' + customId + ' confirmed as COMPLETED by PayPal API and updated in sheet.');
-        } else if (currentPayPalStatus !== null) {
-          Logger.log('PayPal API status for custom_id: ' + customId + ' is: ' + currentPayPalStatus + '. No update required yet.');
-        } else {
-          Logger.log('Could not verify PayPal status for custom_id: ' + customId + '. Manual check recommended.');
-        }
-
-        // Example 2: Send a reminder email (requires a sendEmail function)
-        // sendReminderEmail(customId, row[emailColumnIndex]);
-        // ------------------------------------------------
-      }
-    }
-    Logger.log('Finished 24-hour PayPal payment check. Checked ' + checkedPayments + ' potentially pending payments.');
-
-  } catch (e) {
-    logError('trigger24HourPaymentCheck', e, 'Error during 24-hour payment check trigger execution.');
-  }
-}
-
-/**
- * Masks Personal Identifiable Information (PII) in a record after a specified retention period.
- * Intended to be run by a Time-driven trigger.
- * @param {Array<any>} record The spreadsheet row data representing a record.
- * @param {Array<string>} headers The spreadsheet headers to identify PII columns (e.g., \"name\", \"email\").
- * @param {number} retentionDays The number of days after which PII should be masked.
- * @param {string} lastAccessDateColumnName The name of the column containing the last access or course completion date.
- * @returns {Array<any>} The record with PII columns masked if the retention period has passed.
- */
-function maskPiiData(record, headers, retentionDays, lastAccessDateColumnName) {
-  try {
-    const lastAccessDateColumnIndex = headers.indexOf(lastAccessDateColumnName);
-    if (lastAccessDateColumnIndex === -1) {
-      logError(\"maskPiiData\", new Error(\"Last access date column not found\"), \"Column: \" + lastAccessDateColumnName);
-      return record; // Cannot process without the date column
-    }
-
-    const lastAccessDate = new Date(record[lastAccessDateColumnIndex]);
-    if (isNaN(lastAccessDate.getTime())) {
-      logError(\"maskPiiData\", new Error(\"Invalid last access date value\"), \"Value: \" + record[lastAccessDateColumnIndex]);
-      return record; // Cannot process with invalid date
-    }
+    // Assume these column indices based on common practice or initial requirements.
+    // In a real scenario, these might be dynamically determined or explicitly defined in a schema.
+    const NAME_COLUMN_INDEX = 0;  // Column A for Name
+    const EMAIL_COLUMN_INDEX = 1; // Column B for Email
+    const DATE_COLUMN_INDEX = 2;  // Column C for Transaction Date or similar timestamp
 
     const now = new Date();
-    const retentionThreshold = new Date(now.getTime() - (retentionDays * 24 * 60 * 60 * 1000));
+    const thresholdDate = new Date(now.getTime() - (days * twentyFourHoursInMs));
 
-    if (lastAccessDate <= retentionThreshold) {
-      // Identify PII columns to mask. Assuming common PII fields.
-      const piiColumns = [\"company_name\", \"dept_name\", \"email\", \"name\"]; // Example PII fields from schema
-      for (const piiField of piiColumns) {
-        const piiColumnIndex = headers.indexOf(piiField);
-        if (piiColumnIndex !== -1 && record[piiColumnIndex] !== \"***\") {
-          record[piiColumnIndex] = \"***\";
+    let dataModified = false;
+
+    for (let i = 1; i < values.length; i++) { // Start from 1 to skip header row
+      const row = values[i];
+      const transactionDate = new Date(row[DATE_COLUMN_INDEX]);
+
+      if (transactionDate < thresholdDate) {
+        // Mask Name if it exists and is not already masked
+        if (row[NAME_COLUMN_INDEX] && row[NAME_COLUMN_INDEX] !== "***") {
+          row[NAME_COLUMN_INDEX] = "***";
+          dataModified = true;
+        }
+        // Mask Email if it exists and is not already masked
+        if (row[EMAIL_COLUMN_INDEX] && row[EMAIL_COLUMN_INDEX] !== "***") {
+          row[EMAIL_COLUMN_INDEX] = "***";
+          dataModified = true;
         }
       }
     }
-    return record;
+
+    if (dataModified) {
+      dataRange.setValues(values);
+      Logger.log(`PII masking completed for data older than ${days} days.`);
+    } else {
+      Logger.log("No PII data needed masking based on the specified days.");
+    }
+
   } catch (e) {
-    logError(\"maskPiiData\", e, \"Error masking PII data.\");
-    return record; // Return original record on error
+    logError("maskPiiData", e, `Days for masking: ${days}`);
   }
 }
