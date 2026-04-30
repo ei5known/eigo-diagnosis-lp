@@ -149,6 +149,49 @@ function updateRecord(rowIndex, updatedData) {
  * This typically means records with a \'paymentStatus\' of \'paid\' and \'followUpFlag\' not yet \'24h_sent\'.
  * @returns {Array<{rowIndex: number, record: object}>} An array of objects, each with rowIndex and record data.
  */
+/**
+ * Retrieves records that have a specific payment status and have not yet received a particular follow-up email.
+ * @param {string} paymentStatus The payment status to filter by (e.g., 'pending', 'paid').
+ * @param {string} followUpFlagValue The value of the 'FollowUpEmailSent' column to filter out (e.g., '', '24h_sent').
+ * @returns {Array<{rowIndex: number, record: object}>} An array of objects, each with rowIndex and record data.
+ */
+function getRecordsForFollowUp(paymentStatus, followUpFlagValue) {
+  const sheet = getDataSheet();
+  const headers = getHeaderRow();
+  const data = sheet.getDataRange().getValues();
+  const recordsToProcess = [];
+
+  const paymentStatusColIndex = headers.indexOf("PaymentStatus");
+  const followUpEmailSentColIndex = headers.indexOf("FollowUpEmailSent");
+  const orderIdColIndex = headers.indexOf("OrderID");
+
+  if (paymentStatusColIndex === -1 || followUpEmailSentColIndex === -1 || orderIdColIndex === -1) {
+    Logger.log("Missing required columns for follow-up processing.");
+    return [];
+  }
+
+  // Start from the second row (index 1) to skip headers
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    const currentPaymentStatus = row[paymentStatusColIndex];
+    const currentFollowUpFlag = row[followUpEmailSentColIndex];
+
+    // Check if the record matches the desired payment status and follow-up flag
+    if (currentPaymentStatus === paymentStatus && currentFollowUpFlag === followUpFlagValue) {
+      const record = {};
+      headers.forEach((header, j) => {
+        record[header] = row[j];
+      });
+      recordsToProcess.push({ rowIndex: i + 1, record: record });
+    }
+  }
+  return recordsToProcess;
+}
+
+/**
+ * Retrieves records that need a 24-hour check (e.g., initial payment status 'pending' or similar, without 24h follow-up sent).
+ * @returns {Array<{rowIndex: number, record: object}>} An array of objects, each with rowIndex and record data.
+ */
 function getRecordsFor24HourCheck() {
   const sheet = getDataSheet();
   const headers = getHeaderRow();

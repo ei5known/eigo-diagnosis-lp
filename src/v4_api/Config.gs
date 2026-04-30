@@ -4,18 +4,18 @@
  */
 
 const CONFIG = {
-  SPREADSHEET_ID: 'YOUR_SPREADSHEET_ID_HERE', // Replace with your Google Sheet ID
+  SPREADSHEET_ID: '1M4rROj0IrjkjKJw7jI_qvtVumaEPgbv6qH2SpxjJljg', // Google Sheet ID for V4.0
   SHEET_NAME: 'DiagnosisData',
-  PAYPAL_CLIENT_ID: 'YOUR_PAYPAL_CLIENT_ID_HERE',
-  PAYPAL_SECRET: 'YOUR_PAYPAL_SECRET_HERE',
+  // PayPal API credentials will be retrieved from Script Properties for security
+  // PropertiesService.getScriptProperties().getProperty('PAYPAL_CLIENT_ID')
+  // PropertiesService.getScriptProperties().getProperty('PAYPAL_SECRET')
   PAYPAL_API_BASE_URL: 'https://api-m.paypal.com', // Use 'https://api-m.sandbox.paypal.com' for sandbox
   AI_CURRICULUM_BASE_URL: 'YOUR_AI_CURRICULUM_GENERATION_SERVICE_URL_HERE',
   EMAIL_SENDER_NAME: '英語脳育成塾',
   EMAIL_SENDER_EMAIL: 'noreply@example.com', // Replace with your sender email
   // Column headers for the Google Sheet. Ensure these match the actual sheet headers.
   SHEET_HEADERS: [
-    'timestamp', 'diagnosisId', 'email', 'name', 'paymentStatus', 'transactionId',
-    'followUpFlag', 'aiCurriculumUrl', 'lastAccessed', 'isPiiMasked', 'diagnosisDataJson'
+    'Timestamp', 'OrderID', 'PayerID', 'PayerEmail', 'PaymentStatus', 'Amount', 'Currency', 'ItemName', 'SystemeioContactID', 'FollowUpEmailSent', 'LastActivityDate', 'PersonalInfoMasked', 'company_name', 'dept_name', 'assignment_timing', 'assignment_type', 'assignment_subject', 'assignment_difficulty', 'ai_interaction_style', 'learning_goal', 'previous_experience', 'motivation_level', 'family_support_req', 'assignment_rank', 'ai_curriculum_url'
   ],
   // PII masking/deletion settings
   PII_MASKING_DAYS: 90, // Days after last access to mask PII
@@ -42,9 +42,10 @@ function getSheetName() {
  * @returns {{clientId: string, secret: string}} An object containing PayPal client ID and secret.
  */
 function getPayPalApiCredentials() {
+  const scriptProperties = PropertiesService.getScriptProperties();
   return {
-    clientId: CONFIG.PAYPAL_CLIENT_ID,
-    secret: CONFIG.PAYPAL_SECRET
+    clientId: scriptProperties.getProperty("PAYPAL_CLIENT_ID"),
+    secret: scriptProperties.getProperty("PAYPAL_SECRET")
   };
 }
 
