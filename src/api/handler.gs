@@ -1,150 +1,105 @@
 /**
- * @fileoverview Google Apps Script functions for handling form submissions
- * from the English School AI landing page. This script processes data from
- * diagnosis, booking, and STEP2 (pre-interview questionnaire) forms,
- * saves them to respective Google Sheets, and sends confirmation emails.
+ * @file handler.gs
+ * @description Handles incoming webhooks from SYSTEME.IO, processing diagnosis data and payment notifications.
  */
-
-// --- Configuration Constants (Replace with your actual Spreadsheet IDs and Sheet Names) ---
-const DIAGNOSIS_SPREADSHEET_ID = 'YOUR_DIAGNOSIS_SPREADSHEET_ID';
-const DIAGNOSIS_SHEET_NAME = '診断データ';
-
-const KARTE_SPREADSHEET_ID = 'YOUR_KARTE_SPREADSHEET_ID';
-const KARTE_SHEET_NAME = '予約データ';
-
-const STEP2_SPREADSHEET_ID = 'YOUR_STEP2_SPREADSHEET_ID';
-const STEP2_SHEET_NAME = '面談前アンケートデータ';
-// --- End Configuration Constants ---
 
 /**
- * Helper function to save form data to a specified Google Sheet.
- * @param {string} spreadsheetId The ID of the target Google Spreadsheet.
- * @param {string} sheetName The name of the target sheet within the spreadsheet.
- * @param {object} formData The form data object to be saved.
- * @returns {boolean} True if data was saved successfully, false otherwise.
+ * The main entry point for HTTP POST requests (webhooks).
+ * Processes incoming data from SYSTEME.IO for diagnosis submissions and payment events.
+ * Uses LockService to prevent concurrent data corruption.
+ * @param {GoogleAppsScript.Events.DoPost} e The event object containing the POST data.
+ * @returns {GoogleAppsScript.Content.TextOutput} A JSON response indicating success or failure.
  */
-function saveDataToSheet(spreadsheetId, sheetName, formData) {
+function doPost(e) {
+  let response = { success: false, message: "An unknown error occurred." };
+
+  if (!e || !e.postData || !e.postData.contents) {
+    response.message = "No data received.";
+    Logger.log(response.message);
+    return ContentService.createTextOutput(JSON.stringify(response)).setMimeType(ContentService.MimeType.JSON);
+  }
+
   try {
-    const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
-    const sheet = spreadsheet.getSheetByName(sheetName);
+    // Attempt to parse the incoming JSON payload from SYSTEME.IO.
+    // SYSTEME.IO webhooks typically send JSON in the 'postData.contents'.
+    const requestData = JSON.parse(e.postData.contents);
+    Logger.log("Received Webhook Data: %s", JSON.stringify(requestData));
 
-    if (!sheet) {
-      logError('saveDataToSheet', new Error('Sheet not found'), `Spreadsheet ID: ${spreadsheetId}, Sheet Name: ${sheetName}`);
-      return false;
-    }
+    // Use a lock to prevent concurrent modifications to the spreadsheet.
+    return withLock(() => {
+      // Determine the type of webhook event. This needs to be adapted based on SYSTEME.IO's actual payload structure.
+      // For example, SYSTEME.IO might send a 'type' field or a specific structure for different events.
+      // Assuming SYSTEME.IO sends data for 'order_confirmed' or 'form_submission'.
+      const eventType = requestData.event || (requestData.payment_status ? 'payment_notification' : 'diagnosis_submission');
 
-    // Get headers from the first row of the sheet
-    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-    const rowData = [];
+      let email = requestData.email || (requestData.contact ? requestData.contact.email : null);
+      let name = requestData.name || (requestData.contact ? `${requestData.contact.first_name} ${requestData.contact.last_name}` : null);
+      let transactionId = requestData.order_id || requestData.transaction_id || null;
+      let paymentStatus = requestData.payment_status || null; // e.g., 'paid', 'refunded', 'failed'
 
-    // Map form data to sheet columns based on headers
-    for (let i = 0; i < headers.length; i++) {
-      const header = headers[i];
-      // Special handling for timestamp/created_at, if it exists
-      if (header === 'timestamp' || header === 'created_at') {
-        rowData.push(new Date());
-      } else if (formData.hasOwnProperty(header)) {
-        rowData.push(formData[header]);
-      } else {
-        rowData.push(''); // Add empty string for missing fields to maintain column integrity
+      if (!email || !name) {
+        throw new Error("Missing essential user information (email or name) in webhook payload.");
       }
-    }
 
-    sheet.appendRow(rowData);
-    Logger.log(`Data successfully saved to ${sheetName} sheet.`);
-    return true;
+      let record = findRecordByColumn('email', email);
+      const currentTimestamp = new Date().toISOString();
+      let diagnosisId = requestData.diagnosisId || `lead-${currentTimestamp}-${Utilities.getUuid()}`;
+
+      if (record) {
+        // Existing record found, update it.
+        const updatedData = {
+          timestamp: currentTimestamp,
+          lastAccessed: currentTimestamp, // Update last accessed on any interaction
+        };
+
+        // Update payment status if a payment notification
+        if (eventType === 'payment_notification' && paymentStatus) {
+          updatedData.paymentStatus = paymentStatus;
+          updatedData.transactionId = transactionId;
+          if (paymentStatus === 'paid') {
+            updatedData.followUpFlag = 'initial'; // Mark for initial follow-up
+          }
+        }
+
+        // If diagnosis data is present in the webhook, update it
+        if (requestData.diagnosis) { // Assuming diagnosis data comes nested
+          const existingDiagnosisData = JSON.parse(record.record.diagnosisDataJson || '{}');
+          // Merge new diagnosis data with existing. Deep merge might be needed for complex objects.
+          const mergedDiagnosisData = { ...existingDiagnosisData, ...requestData.diagnosis };
+          updatedData.diagnosisDataJson = JSON.stringify(mergedDiagnosisData);
+          updatedData.diagnosisId = diagnosisId; // Update diagnosisId if it changed or was newly provided
+        }
+
+        updateRecord(record.rowIndex, updatedData);
+        response = { success: true, message: `Record updated for ${email}.` };
+      } else {
+        // No existing record, create a new one.
+        const newRecordData = {
+          timestamp: currentTimestamp,
+          diagnosisId: diagnosisId,
+          email: email,
+          name: name,
+          paymentStatus: paymentStatus || 'pending', // Default to 'pending' if not provided
+          transactionId: transactionId || '',
+          followUpFlag: (paymentStatus === 'paid') ? 'initial' : '',
+          aiCurriculumUrl: '', // Will be generated later
+          lastAccessed: currentTimestamp,
+          isPiiMasked: false,
+          diagnosisDataJson: JSON.stringify(requestData.diagnosis || {}),
+        };
+        appendRecord(newRecordData);
+        response = { success: true, message: `New record created for ${email}.` };
+
+        // Send initial follow-up email if payment is confirmed
+        if (newRecordData.paymentStatus === 'paid') {
+          sendFollowUpEmail(email, name, '24hour_followup');
+        }
+      }
+    });
   } catch (e) {
-    logError('saveDataToSheet', e, `Error saving data to sheet. Spreadsheet ID: ${spreadsheetId}, Sheet Name: ${sheetName}`);
-    return false;
-  }
-}
-
-/**
- * Receives data from the diagnosis form (STEP0), saves it, and sends a confirmation email.
- * @param {GoogleAppsScript.Events.DoPost} e The event object containing form submission parameters.
- */
-function handleDiagnosis(e) {
-  if (!e || !e.parameter) {
-    logError('handleDiagnosis', new Error('Invalid event object'), 'Event object or parameters are missing.');
-    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Invalid request' })).setMimeType(ContentService.MimeType.JSON);
+    response.message = `Webhook processing failed: ${e.message}`;
+    Logger.log(response.message);
   }
 
-  const formData = e.parameter;
-  Logger.log('Received Diagnosis Form Data: ' + JSON.stringify(formData));
-
-  try {
-    // Save data to Diagnosis Sheet
-    const saveSuccess = saveDataToSheet(DIAGNOSIS_SPREADSHEET_ID, DIAGNOSIS_SHEET_NAME, formData);
-
-    if (saveSuccess) {
-      // Send Diagnosis Email (assuming sendDiagnosisEmail is defined in mail.gs)
-      sendDiagnosisEmail(formData);
-      return ContentService.createTextOutput(JSON.stringify({ status: 'success', message: 'Diagnosis data received and email sent.' })).setMimeType(ContentService.MimeType.JSON);
-    } else {
-      return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Failed to save diagnosis data.' })).setMimeType(ContentService.MimeType.JSON);
-    }
-  } catch (error) {
-    logError('handleDiagnosis', error, 'Error processing diagnosis form submission.');
-    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'An unexpected error occurred.' })).setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-/**
- * Receives data from the booking form (STEP1), saves it, confirms the reservation, and sends a confirmation email.
- * @param {GoogleAppsScript.Events.DoPost} e The event object containing form submission parameters.
- */
-function handleKarte(e) {
-  if (!e || !e.parameter) {
-    logError('handleKarte', new Error('Invalid event object'), 'Event object or parameters are missing.');
-    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Invalid request' })).setMimeType(ContentService.MimeType.JSON);
-  }
-
-  const formData = e.parameter;
-  Logger.log('Received Booking Form Data: ' + JSON.stringify(formData));
-
-  try {
-    // Save data to Booking Sheet
-    const saveSuccess = saveDataToSheet(KARTE_SPREADSHEET_ID, KARTE_SHEET_NAME, formData);
-
-    if (saveSuccess) {
-      // Send Booking Confirmation Email (assuming sendBookingConfirmEmail is defined in mail.gs)
-      sendBookingConfirmEmail(formData);
-      return ContentService.createTextOutput(JSON.stringify({ status: 'success', message: 'Booking data received and confirmation email sent.' })).setMimeType(ContentService.MimeType.JSON);
-    } else {
-      return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Failed to save booking data.' })).setMimeType(ContentService.MimeType.JSON);
-    }
-  } catch (error) {
-    logError('handleKarte', error, 'Error processing booking form submission.');
-    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'An unexpected error occurred.' })).setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-/**
- * Receives data from the pre-interview questionnaire (STEP2), saves it, and sends a confirmation email.
- * @param {GoogleAppsScript.Events.DoPost} e The event object containing form submission parameters.
- */
-function handleStep2(e) {
-  if (!e || !e.parameter) {
-    logError('handleStep2', new Error('Invalid event object'), 'Event object or parameters are missing.');
-    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Invalid request' })).setMimeType(ContentService.MimeType.JSON);
-  }
-
-  const formData = e.parameter;
-  Logger.log('Received STEP2 Form Data: ' + JSON.stringify(formData));
-
-  try {
-    // Save data to STEP2 Sheet
-    const saveSuccess = saveDataToSheet(STEP2_SPREADSHEET_ID, STEP2_SHEET_NAME, formData);
-
-    if (saveSuccess) {
-      // Send STEP2 Confirmation Email (assuming sendStep2ConfirmEmail is defined in mail.gs)
-      sendStep2ConfirmEmail(formData);
-      return ContentService.createTextOutput(JSON.stringify({ status: 'success', message: 'STEP2 data received and confirmation email sent.' })).setMimeType(ContentService.MimeType.JSON);
-    } else {
-      return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Failed to save STEP2 data.' })).setMimeType(ContentService.MimeType.JSON);
-    }
-  } catch (error) {
-    logError('handleStep2', error, 'Error processing STEP2 form submission.');
-    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'An unexpected error occurred.' })).setMimeType(ContentService.MimeType.JSON);
-  }
+  return ContentService.createTextOutput(JSON.stringify(response)).setMimeType(ContentService.MimeType.JSON);
 }

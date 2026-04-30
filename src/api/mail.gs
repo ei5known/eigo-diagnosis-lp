@@ -1,152 +1,128 @@
 /**
- * @fileoverview Email utility functions for the English School AI system.
- * Handles sending various types of emails using GmailApp.
+ * @file mail.gs
+ * @description Provides functions for sending various types of emails using MailApp.
  */
 
 /**
- * Sends a thank you email for diagnosis completion, including a URL to the booking form.
- * @param {object} payload The data object containing recipient information and diagnosis results.
- * @param {string} payload.email The recipient's email address.
- * @param {string} payload.name The recipient's name.
- * @param {string} payload.result_rank The diagnosis rank (e.g., 'A', 'B', 'C').
- * @param {number} payload.total_score The total score from the diagnosis.
- * @param {string} payload.result_label The label corresponding to the diagnosis result.
- * @param {string} payload.recommended_action The recommended action based on the diagnosis.
+ * Sends a generic email.
+ * @param {string} recipientEmail The email address of the recipient.
+ * @param {string} subject The subject line of the email.
+ * @param {string} body The plain text body of the email.
+ * @param {string} [htmlBody] The HTML body of the email (optional, if provided, body is used as fallback).
+ * @returns {boolean} True if the email was sent successfully, false otherwise.
  */
-function sendDiagnosisEmail(payload) {
-  const recipient = payload.email;
-  const name = payload.name;
-  const rank = payload.result_rank || 'C';
-  // [UPDATE: 2026-04-27]
-  // - 内容: 診断サンクスメール内の予約フォームURLにLP入力値をパラメータとして付与。
-  // - 理由: ユーザー体験向上のため、診断フォームで入力された氏名とメールアドレスを予約フォームに自動引き継ぎ。
-  // - 備考: `payload.name` は LP 側で `last_name + ' ' + first_name` 形式で生成されている前提。
-  const bookingUrl = 'https://ei5known.github.io/eigo-diagnosis-lp/booking.html?last_name=' +
-    encodeURIComponent((payload.name || '').split(' ')[0]) + '&first_name=' +
-    encodeURIComponent((payload.name || '').split(' ').slice(1).join(' ')) + '&email=' +
-    encodeURIComponent(payload.email);
+function sendEmail(recipientEmail, subject, body, htmlBody = null) {
+  const senderName = getEmailSenderName();
+  const senderEmail = getEmailSenderEmail();
 
-  const subject = '【診断結果】英語脳育成塾 - あなたの英語スキル診断結果';
-  const body = `
-${name}様
+  if (!recipientEmail || !subject || !body) {
+    Logger.log("Cannot send email: Missing recipient, subject, or body.");
+    return false;
+  }
 
-ご診断ありがとうございました。
-以下が診断結果です。
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📊 診断スコア: ${payload.total_score}/26
-📈 判定レベル: レベル${rank}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-【診断結果】
-${payload.result_label}
-
-【推奨アクション】
-${payload.recommended_action}
-
-【次のステップ】
-以下のリンクより、45分の個別Google Meet面談をご予約ください。
-
-面談予約フォーム: ${bookingUrl}
-
-ご不明な点がございましたら、お気軽にお問い合わせください。
-
-よろしくお願いいたします。
-英語脳育成塾 事務局
-`;
+  const options = {
+    name: senderName,
+    from: senderEmail,
+    htmlBody: htmlBody || body // Use htmlBody if provided, else use plain body
+  };
 
   try {
-    // Assuming `logError` is globally available from `utils.gs`
-    GmailApp.sendEmail(recipient, subject, body, { name: '英語脳育成塾 事務局' });
-    Logger.log('Diagnosis email sent to: ' + recipient);
-  } catch (emailError) {
-    // Assuming `logError` is globally available from `utils.gs`
-    logError('sendDiagnosisEmail', emailError, 'Failed to send diagnosis email to ' + recipient);
+    MailApp.sendEmail(recipientEmail, subject, body, options);
+    Logger.log("Email sent to %s with subject: %s", recipientEmail, subject);
+    return true;
+  } catch (e) {
+    Logger.log("Failed to send email to %s. Error: %s", recipientEmail, e.message);
+    return false;
   }
 }
 
 /**
- * Sends a booking confirmation email, including a URL with parameters for the STEP2 form.
- * @param {object} payload The data object containing recipient information and booking details.
- * @param {string} payload.email The recipient's email address.
- * @param {string} payload.name The recipient's name.
- * @param {string} payload.booking_date The confirmed booking date.
- * @param {string} payload.booking_time The confirmed booking time.
- * @param {string} payload.google_meet_url The Google Meet URL for the interview.
+ * Sends a follow-up email to a user.
+ * @param {string} recipientEmail The email address of the recipient.
+ * @param {string} userName The name of the user for personalization.
+ * @param {string} emailType A string indicating the type of follow-up (e.g., '24hour', 'AI_Curriculum').
+ * @returns {boolean} True if the email was sent successfully, false otherwise.
  */
-function sendBookingConfirmEmail(payload) {
-  const recipient = payload.email;
-  const name = payload.name;
-  const bookingDate = payload.booking_date;
-  const bookingTime = payload.booking_time;
-  const googleMeetUrl = payload.google_meet_url;
+function sendFollowUpEmail(recipientEmail, userName, emailType) {
+  let subject = "";
+  let body = "";
+  let htmlBody = "";
 
-  // Generate STEP2 form URL with pre-filled parameters
-  const step2Url = 'https://ei5known.github.io/eigo-diagnosis-lp/step2.html?last_name=' +
-    encodeURIComponent((payload.name || '').split(' ')[0]) + '&first_name=' +
-    encodeURIComponent((payload.name || '').split(' ').slice(1).join(' ')) + '&email=' +
-    encodeURIComponent(payload.email) + '&booking_date=' +
-    encodeURIComponent(bookingDate) + '&booking_time=' +
-    encodeURIComponent(bookingTime);
+  switch (emailType) {
+    case "24hour_followup":
+      subject = `【英語脳育成塾】お申し込みありがとうございます - ご案内`;
+      body = `
+${userName}様
 
-  const subject = '【ご予約確定】英語脳育成塾 - 面談予約のお知らせ';
-  const body = `
-${name}様
+この度は英語脳育成塾にお申し込みいただき、誠にありがとうございます。
 
-英語脳育成塾の面談予約が確定いたしました。
-詳細は以下の通りです。
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📅 日時: ${bookingDate} ${bookingTime}
-🔗 Google Meet URL: ${googleMeetUrl}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-面談前に、以下のアンケートにご回答ください。
-
-面談前アンケート (STEP2): ${step2Url}
+24時間以内にAIカリキュラム発行のご案内を差し上げます。
+今しばらくお待ちください。
 
 ご不明な点がございましたら、お気軽にお問い合わせください。
 
-よろしくお願いいたします。
+---
 英語脳育成塾 事務局
 `;
-
-  try {
-    GmailApp.sendEmail(recipient, subject, body, { name: '英語脳育成塾 事務局' });
-    Logger.log('Booking confirmation email sent to: ' + recipient);
-  } catch (emailError) {
-    logError('sendBookingConfirmEmail', emailError, 'Failed to send booking confirmation email to ' + recipient);
+      htmlBody = `
+      <p>${userName}様</p>
+      <p>この度は英語脳育成塾にお申し込みいただき、誠にありがとうございます。</p>
+      <p>24時間以内にAIカリキュラム発行のご案内を差し上げます。<br>今しばらくお待ちください。</p>
+      <p>ご不明な点がございましたら、お気軽にお問い合わせください。</p>
+      <hr>
+      <p>英語脳育成塾 事務局</p>
+      `;
+      break;
+    case "ai_curriculum_ready":
+      // This case should ideally not be called directly, as AI curriculum email uses a dedicated function
+      Logger.log("sendFollowUpEmail called with 'ai_curriculum_ready' type. Use sendAiCurriculumEmail instead.");
+      return false;
+    default:
+      Logger.log("Unknown email type for follow-up: %s", emailType);
+      return false;
   }
+
+  return sendEmail(recipientEmail, subject, body, htmlBody);
 }
 
 /**
- * Sends a confirmation email for STEP2 questionnaire submission.
- * @param {object} payload The data object containing recipient information and STEP2 details.
- * @param {string} payload.email The recipient's email address.
- * @param {string} payload.name The recipient's name.
+ * Sends an email containing the AI curriculum URL.
+ * @param {string} recipientEmail The email address of the recipient.
+ * @param {string} userName The name of the user for personalization.
+ * @param {string} aiCurriculumUrl The URL to the personalized AI curriculum.
+ * @returns {boolean} True if the email was sent successfully, false otherwise.
  */
-function sendStep2ConfirmEmail(payload) {
-  const recipient = payload.email;
-  const name = payload.name;
+function sendAiCurriculumEmail(recipientEmail, userName, aiCurriculumUrl) {
+  if (!aiCurriculumUrl) {
+    Logger.log("Cannot send AI curriculum email: AI curriculum URL is missing.");
+    return false;
+  }
 
-  const subject = '【回答受付】英語脳育成塾 - 面談前アンケートのご回答ありがとうございます';
+  const subject = `【英語脳育成塾】AIカリキュラムのご案内`;
   const body = `
-${name}様
+${userName}様
 
-面談前アンケート (STEP2) のご回答ありがとうございました。
+お待たせいたしました！
+あなたのためのAIカリキュラムが完成いたしました。
+以下のURLからご確認ください。
 
-ご回答いただいた内容は、今後の面談に活用させていただきます。
+AIカリキュラム: ${aiCurriculumUrl}
 
+学習を始める準備はできていますか？
 ご不明な点がございましたら、お気軽にお問い合わせください。
 
-よろしくお願いいたします。
+---
 英語脳育成塾 事務局
 `;
+  const htmlBody = `
+    <p>${userName}様</p>
+    <p>お待たせいたしました！<br>あなたのためのAIカリキュラムが完成いたしました。</p>
+    <p>以下のURLからご確認ください。</p>
+    <p><a href="${aiCurriculumUrl}">AIカリキュラムはこちら</a></p>
+    <p>学習を始める準備はできていますか？<br>ご不明な点がございましたら、お気軽にお問い合わせください。</p>
+    <hr>
+    <p>英語脳育成塾 事務局</p>
+    `;
 
-  try {
-    GmailApp.sendEmail(recipient, subject, body, { name: '英語脳育成塾 事務局' });
-    Logger.log('STEP2 confirmation email sent to: ' + recipient);
-  } catch (emailError) {
-    logError('sendStep2ConfirmEmail', emailError, 'Failed to send STEP2 confirmation email to ' + recipient);
-  }
+  return sendEmail(recipientEmail, subject, body, htmlBody);
 }
